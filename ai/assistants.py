@@ -1,5 +1,6 @@
 from textwrap import dedent
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
+import logging
 
 from phi.assistant import Assistant
 from phi.assistant.python import PythonAssistant
@@ -24,6 +25,43 @@ scratch_dir = ws_settings.ws_root.joinpath("scratch")
 if not scratch_dir.exists():
     scratch_dir.mkdir(exist_ok=True, parents=True)
 
+logger = logging.getLogger(__name__)
+
+class Assistant:
+    def __init__(self, config: Dict[str, Any]):
+        """
+        Initialize AI assistant with configuration
+        """
+        self.config = config
+        self.model = config.get("model_name")
+        self.context = []
+    
+    async def process_message(self, message: str) -> str:
+        """
+        Process user message and return response
+        """
+        try:
+            # Add message to context
+            self.context.append({"role": "user", "content": message})
+            
+            # Process message here
+            response = await self._generate_response()
+            
+            # Add response to context
+            self.context.append({"role": "assistant", "content": response})
+            
+            return response
+            
+        except Exception as e:
+            logger.error(f"Error processing message: {str(e)}")
+            raise
+    
+    async def _generate_response(self) -> str:
+        """
+        Generate response based on context
+        """
+        # Implement actual response generation logic here
+        pass
 
 def get_lyraios(
     calculator: bool = False,
