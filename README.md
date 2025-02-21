@@ -131,3 +131,170 @@ phi ws up
 # Stop the workspace using:
 phi ws down
 ```
+
+## API Documentation
+
+### REST API Endpoints
+
+#### Assistant API
+- `POST /api/v1/assistant/chat`
+  - Process chat messages with the AI assistant
+  - Supports context-aware conversations
+  - Returns structured responses with tool usage information
+
+#### Health Check
+- `GET /api/v1/health`
+  - Monitor system health status
+  - Returns version and status information
+
+### API Documentation
+- Interactive API documentation available at `/docs`
+- ReDoc alternative documentation at `/redoc`
+- OpenAPI specification at `/openapi.json`
+
+## Development Guide
+
+### Project Structure
+```
+lyraios/
+├── ai/                     # AI core functionality
+│   ├── assistants.py      # Assistant implementations
+│   └── settings.py        # AI-specific settings
+├── api/                   # API layer
+│   ├── middleware/        # API middleware
+│   └── routes/           # API endpoints
+├── app/                   # Main application
+├── config/               # Configuration
+└── scripts/              # Utility scripts
+```
+
+### Development Setup
+
+1. **Environment Setup**
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or
+.\venv\Scripts\activate   # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install development dependencies
+pip install -r requirements-dev.txt
+```
+
+2. **Configuration**
+```bash
+# Copy example configuration
+cp config/example.env .env
+
+# Required environment variables:
+- OPENAI_API_KEY
+- DATABASE_URL
+- DEBUG_MODE
+```
+
+3. **Database Setup**
+```bash
+# Initialize database
+python scripts/init_db.py
+
+# Run migrations
+alembic upgrade head
+```
+
+### Development Best Practices
+
+1. **Code Style**
+- Follow PEP 8 guidelines
+- Use type hints
+- Write docstrings for functions and classes
+- Use black for code formatting
+- Use isort for import sorting
+
+2. **Testing**
+```bash
+# Run tests
+pytest
+
+# Run tests with coverage
+pytest --cov=app tests/
+```
+
+3. **Pre-commit Hooks**
+```bash
+# Install pre-commit hooks
+pre-commit install
+
+# Run manually
+pre-commit run --all-files
+```
+
+### Deployment Guide
+
+#### Docker Deployment
+
+1. **Development Environment**
+```bash
+# Build development image
+docker build -f docker/Dockerfile.dev -t lyraios:dev .
+
+# Run development container
+docker-compose -f docker-compose.dev.yml up
+```
+
+2. **Production Environment**
+```bash
+# Build production image
+docker build -f docker/Dockerfile.prod -t lyraios:prod .
+
+# Run production container
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+#### Configuration Options
+
+1. **Environment Variables**
+```
+# Application Settings
+DEBUG=false
+LOG_LEVEL=INFO
+ALLOWED_HOSTS=example.com,api.example.com
+
+# AI Settings
+AI_MODEL=gpt-4
+AI_TEMPERATURE=0.7
+AI_MAX_TOKENS=1000
+
+# Database Settings
+DATABASE_URL=postgresql://user:pass@localhost:5432/dbname
+```
+
+2. **Scaling Options**
+- Configure worker processes via `GUNICORN_WORKERS`
+- Adjust memory limits via `MEMORY_LIMIT`
+- Set concurrency via `MAX_CONCURRENT_REQUESTS`
+
+### Monitoring and Maintenance
+
+1. **Health Checks**
+- Monitor `/health` endpoint
+- Check system metrics via Prometheus endpoints
+- Review logs in `/var/log/lyraios/`
+
+2. **Backup and Recovery**
+```bash
+# Backup database
+python scripts/backup_db.py
+
+# Restore from backup
+python scripts/restore_db.py --backup-file backup.sql
+```
+
+3. **Troubleshooting**
+- Check application logs
+- Verify environment variables
+- Ensure database connectivity
+- Monitor system resources
