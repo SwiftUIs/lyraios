@@ -1,8 +1,73 @@
 # LYRAIOS
 
 ## Overview
-The LYRAIOS is designed to facilitate the interaction between users and AI-powered tools, providing an efficient way to manage and execute tasks across various platforms. This system leverages multiple functions to perform tasks such as retrieving GitHub discussions, searching code, managing security alerts, and more.
 
+LYRAIOS (LLM-based Your Reliable AI Operating System) is an advanced AI assistant platform built with FastAPI and Streamlit, designed to serve as an operating system for AI applications:
+
+### Core OS Features
+- **AI Process Management**: 
+  - Dynamic task allocation and scheduling
+  - Multi-assistant coordination and communication
+  - Resource optimization and load balancing
+  - State management and persistence
+
+- **AI Memory System**:
+  - Short-term conversation memory
+  - Long-term vector database storage
+  - Cross-session context preservation
+  - Knowledge base integration
+
+- **AI I/O System**:
+  - Multi-modal input processing (text, files, APIs)
+  - Structured output formatting
+  - Stream processing capabilities
+  - Event-driven architecture
+
+### Built-in Tools
+- **Calculator**: Advanced mathematical operations including factorial and prime number checking
+- **Web Search**: Integrated DuckDuckGo search with customizable result limits
+- **Financial Analysis**: 
+  - Real-time stock price tracking
+  - Company information retrieval
+  - Analyst recommendations
+  - Financial news aggregation
+- **File Management**: Read, write, and list files in the workspace
+- **Research Tools**: Integration with Exa for comprehensive research capabilities
+
+### Specialized Assistant Team
+- **Python Assistant**: 
+  - Live Python code execution
+  - Streamlit charting capabilities
+  - Package management with pip
+- **Research Assistant**: 
+  - NYT-style report generation
+  - Automated web research
+  - Structured output formatting
+  - Source citation and reference management
+
+### Technical Architecture
+- **FastAPI Backend**: RESTful API with automatic documentation
+- **Streamlit Frontend**: Interactive web interface
+- **Vector Database**: PGVector for efficient knowledge storage and retrieval
+- **PostgreSQL Storage**: Persistent storage for conversations and assistant states
+- **Docker Support**: Containerized deployment for development and production
+
+### System Features
+- **Knowledge Management**: 
+  - PDF document processing
+  - Website content integration
+  - Vector-based semantic search
+  - Knowledge graph construction
+- **Process Control**: 
+  - Task scheduling and prioritization
+  - Resource allocation
+  - Error handling and recovery
+  - Performance monitoring
+- **Security & Access Control**:
+  - API key management
+  - Authentication and authorization
+  - Rate limiting and quota management
+  - Secure data storage
 
 ## Setup Workspace
 ```sh
