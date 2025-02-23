@@ -2,7 +2,7 @@ from textwrap import dedent
 from typing import Optional, List, Dict, Any
 import logging
 
-from phi.assistant import Assistant
+from phi.assistant import Assistant as PhiAssistant
 from phi.assistant.python import PythonAssistant
 from phi.embedder.openai import OpenAIEmbedder
 from phi.knowledge import AssistantKnowledge
@@ -19,6 +19,7 @@ from phi.vectordb.pgvector import PgVector2
 from ai.settings import ai_settings
 from db.session import db_url
 from workspace.settings import ws_settings
+from ai.llm.openai_chat import CustomOpenAIChat
 
 
 scratch_dir = ws_settings.ws_root.joinpath("scratch")
@@ -26,6 +27,24 @@ if not scratch_dir.exists():
     scratch_dir.mkdir(exist_ok=True, parents=True)
 
 logger = logging.getLogger(__name__)
+
+# Define LYRAIOS instructions
+LYRAIOS_INSTRUCTIONS = [
+    "You are the most advanced AI system in the world called `LYRAIOS`.",
+    "When the user sends a message, first **think** and determine if:\n"
+    " - You can answer by using a tool available to you\n"
+    " - You need to search the knowledge base\n"
+    " - You need to search the internet\n"
+    " - You need to delegate the task to a team member\n"
+    " - You need to ask a clarifying question",
+    "If the user asks about a topic, first ALWAYS search your knowledge base using the `search_knowledge_base` tool.",
+    "If you dont find relevant information in your knowledge base, use the `duckduckgo_search` tool to search the internet.",
+    "If the user asks to summarize the conversation, use the `get_chat_history` tool with None as the argument.",
+    "If the users message is unclear, ask clarifying questions to get more information.",
+    "Carefully read the information you have gathered and provide a clear and concise answer to the user.",
+    "Do not use phrases like 'based on my knowledge' or 'depending on the information'.",
+    "You can delegate tasks to an AI Assistant in your team depending of their role and the tools available to them.",
+]
 
 class Assistant:
     def __init__(self, config: Dict[str, Any]):
@@ -73,12 +92,20 @@ def get_lyraios(
     run_id: Optional[str] = None,
     user_id: Optional[str] = None,
     debug_mode: bool = True,
-) -> Assistant:
+    model: Optional[str] = None,
+    temperature: float = 0.7,
+    streaming: bool = True,
+) -> PhiAssistant:
+    """Get the LYRAIOS assistant"""
+    # Use custom model or default from settings
+    model = model or ai_settings.openai_chat_model
+    
     # LLM to use for the Assistant
-    llm = OpenAIChat(
-        model=ai_settings.gpt_4,
+    llm = CustomOpenAIChat(
+        model=model,
         max_tokens=ai_settings.default_max_tokens,
-        temperature=ai_settings.default_temperature,
+        temperature=temperature,
+        base_url=ai_settings.openai_base_url,
     )
 
     # Add tools available to the Personalized Assistant
@@ -113,7 +140,7 @@ def get_lyraios(
         )
 
     # Add team members available to the Lyraios
-    team: List[Assistant] = []
+    team: List[PhiAssistant] = []
     if python_assistant:
         _python_assistant = PythonAssistant(
             llm=llm,
@@ -128,50 +155,12 @@ def get_lyraios(
             "To write and run python code, delegate the task to the `Python Assistant`."
         )
     if research_assistant:
-        _research_assistant = Assistant(
-            llm=llm,
-            name="Research Assistant",
-            role="Write a research report on a given topic",
-            description="You are a Senior New York Times researcher tasked with writing a cover story research report.",
-            instructions=[
-                "For a given topic, use the `search_exa` to get the top 10 search results.",
-                "Carefully read the results and generate a final - NYT cover story worthy report in the format provided below.",
-                "Make your report engaging, informative, and well-structured.",
-                "Remember: you are writing for the New York Times, so the quality of the report is important.",
-            ],
-            expected_output=dedent(
-                """\
-            An engaging, informative, and well-structured report in the following format:
-
-            ## Title
-
-            - **Overview** Brief introduction of the topic.
-            - **Importance** Why is this topic significant now?
-
-            ### Section 1
-            - **Detail 1**
-            - **Detail 2**
-
-            ### Section 2
-            - **Detail 1**
-            - **Detail 2**
-
-            ## Conclusion
-            - **Summary of report:** Recap of the key findings from the report.
-            - **Implications:** What these findings mean for the future.
-
-            ## References
-            - [Reference 1](Link to Source)
-            - [Reference 2](Link to Source)
-            """
-            ),
-            tools=[ExaTools(num_results=5, text_length_limit=1000)],
-            # This setting tells the LLM to format messages in markdown
-            markdown=True,
-            show_tool_calls=False,
-            add_datetime_to_instructions=True,
-            save_output_to_file="scratch/{run_id}.md",
-            debug_mode=debug_mode,
+        _research_assistant = PhiAssistant(
+            name="LYRAIOS",
+            instructions=LYRAIOS_INSTRUCTIONS,
+            model=model,
+            temperature=temperature,
+            streaming=streaming,
         )
         team.append(_research_assistant)
         extra_instructions.append(
@@ -179,7 +168,7 @@ def get_lyraios(
             "Return the report in the <report_format> to the user as is, without any additional text like 'here is the report'."
         )
 
-    return Assistant(
+    return PhiAssistant(
         llm=llm,
         name="LYRAIOS",
         run_id=run_id,
@@ -191,7 +180,11 @@ def get_lyraios(
             vector_db=PgVector2(
                 db_url=db_url,
                 collection="lyraios_documents",
-                embedder=OpenAIEmbedder(model=ai_settings.embedding_model, dimensions=1536),
+                embedder=OpenAIEmbedder(
+                    model=ai_settings.openai_embedding_model,
+                    dimensions=1536,
+                    base_url=ai_settings.openai_base_url,
+                ),
             ),
             # 3 references are added to the prompt
             num_documents=3,

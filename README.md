@@ -168,41 +168,107 @@ lyraios/
 └── scripts/              # Utility scripts
 ```
 
-### Development Setup
+### Environment Configuration
 
-1. **Environment Setup**
+1. **Environment Variables Setup**
 ```bash
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# or
-.\venv\Scripts\activate   # Windows
+# Copy the example .env file
+cp example.env .env
 
-# Install dependencies
+# Required environment variables
+EXA_API_KEY=your_exa_api_key_here        # Get from https://dashboard.exa.ai/api-keys
+OPENAI_API_KEY=your_openai_api_key_here  # Get from OpenAI dashboard
+OPENAI_BASE_URL=your_openai_base_url     # Optional: Custom OpenAI API endpoint
+
+# OpenAI Model Configuration
+OPENAI_CHAT_MODEL=gpt-4-turbo-preview    # Default chat model
+OPENAI_VISION_MODEL=gpt-4-vision-preview  # Model for vision tasks
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small  # Model for embeddings
+
+# Optional configuration
+STREAMLIT_SERVER_PORT=8501  # Default Streamlit port
+API_SERVER_PORT=8000       # Default FastAPI port
+```
+
+2. **OpenAI Configuration Examples**
+```bash
+# Standard OpenAI API
+OPENAI_API_KEY=sk-***
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_CHAT_MODEL=gpt-4-turbo-preview
+
+# Azure OpenAI
+OPENAI_API_KEY=your_azure_api_key
+OPENAI_BASE_URL=https://your-resource.openai.azure.com/openai/deployments/your-deployment
+OPENAI_CHAT_MODEL=gpt-4
+
+# Other OpenAI API providers
+OPENAI_API_KEY=your_api_key
+OPENAI_BASE_URL=https://your-api-endpoint.com/v1
+OPENAI_CHAT_MODEL=your-model-name
+```
+
+2. **Streamlit Configuration**
+```bash
+# Create Streamlit config directory
+mkdir -p ~/.streamlit
+
+# Create config.toml to disable usage statistics (optional)
+cat > ~/.streamlit/config.toml << EOL
+[browser]
+gatherUsageStats = false
+EOL
+```
+
+### Development Scripts
+
+The project includes convenient development scripts to manage the application:
+
+1. **Using dev.py Script**
+```bash
+# Run both frontend and backend
+python -m scripts.dev run
+
+# Run only frontend
+python -m scripts.dev run --no-backend
+
+# Run only backend
+python -m scripts.dev run --no-frontend
+
+# Run with custom ports
+python -m scripts.dev run --frontend-port 8502 --backend-port 8001
+```
+
+2. **Manual Service Start**
+```bash
+# Start Streamlit frontend
+streamlit run app/app.py
+
+# Start FastAPI backend
+uvicorn api.main:app --reload
+```
+
+### Dependencies Management
+
+1. **Core Dependencies**
+```bash
+# Install production dependencies
 pip install -r requirements.txt
 
 # Install development dependencies
 pip install -r requirements-dev.txt
+
+# Install the project in editable mode
+pip install -e .
 ```
 
-2. **Configuration**
+2. **Additional Tools**
 ```bash
-# Copy example configuration
-cp config/example.env .env
+# Install python-dotenv for environment management
+pip install python-dotenv
 
-# Required environment variables:
-- OPENAI_API_KEY
-- DATABASE_URL
-- DEBUG_MODE
-```
-
-3. **Database Setup**
-```bash
-# Initialize database
-python scripts/init_db.py
-
-# Run migrations
-alembic upgrade head
+# Install development tools
+pip install black isort mypy pytest
 ```
 
 ### Development Best Practices
