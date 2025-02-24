@@ -36,6 +36,7 @@ with st.expander(":rainbow[:point_down: How to use]"):
 def main() -> None:
     # Get username
     user_id = get_username_sidebar()
+    
     if user_id:
         st.sidebar.info(f":technologist: User: {user_id}")
     else:
@@ -120,23 +121,30 @@ def main() -> None:
     lyraios: Assistant
     if "lyraios" not in st.session_state or st.session_state["lyraios"] is None:
         logger.info("---*--- Creating LYRAIOS ---*---")
-        lyraios = get_lyraios(
-            user_id=user_id,
-            calculator=calculator_enabled,
-            ddg_search=ddg_search_enabled,
-            file_tools=file_tools_enabled,
-            finance_tools=finance_tools_enabled,
-            research_assistant=research_assistant_enabled,
-        )
-        st.session_state["lyraios"] = lyraios
+        try:
+            lyraios = get_lyraios(
+                user_id=user_id,
+                calculator=calculator_enabled,
+                ddg_search=ddg_search_enabled,
+                file_tools=file_tools_enabled,
+                finance_tools=finance_tools_enabled,
+                research_assistant=research_assistant_enabled,
+            )
+            st.session_state["lyraios"] = lyraios
+        except Exception as e:
+            st.error(f"Could not create assistant: {str(e)}")
+            return
     else:
         lyraios = st.session_state["lyraios"]
 
-    # Create assistant run (i.e. log to database) and save run_id in session state
+    # Create assistant run
     try:
-        st.session_state["lyraios_run_id"] = lyraios.create_run()
-    except Exception:
-        st.warning("Could not create assistant, is the database running?")
+        run_id = lyraios.create_run()
+        st.session_state["lyraios_run_id"] = run_id
+        logger.info(f"Created new run: {run_id}")
+    except Exception as e:
+        st.error(f"Could not create assistant run: {str(e)}")
+        logger.error(f"Failed to create run: {e}")
         return
 
     # Load existing messages

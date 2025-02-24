@@ -1,18 +1,12 @@
 import os
-from typing import Optional, Union, List, Dict, Any
-from pathlib import Path
 import sqlite3
 import json
 from datetime import datetime
-from phi.storage.assistant.base import AssistantStorage
-from phi.storage.assistant.postgres import PgAssistantStorage
+from typing import Optional, List, Dict, Any
+from .base import BaseStorage
 from .config import db_settings
-from .init import init_database
-import logging
 
-logger = logging.getLogger(__name__)
-
-class SQLiteStorage:
+class SQLiteStorage(BaseStorage):
     def __init__(self, db_path: Optional[str] = None):
         """Initialize SQLite storage"""
         if db_path is None:
@@ -39,7 +33,14 @@ class SQLiteStorage:
             """)
             conn.commit()
     
-    def save_run(self, run_id: str, messages: list, metadata: dict = None, user_id: str = None, assistant_name: str = None):
+    def save_run(
+        self,
+        run_id: str,
+        messages: List[Dict[str, Any]],
+        metadata: Optional[Dict[str, Any]] = None,
+        user_id: Optional[str] = None,
+        assistant_name: Optional[str] = None,
+    ) -> None:
         """Save a conversation run"""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
@@ -59,7 +60,7 @@ class SQLiteStorage:
             )
             conn.commit()
     
-    def get_run(self, run_id: str) -> Optional[dict]:
+    def get_run(self, run_id: str) -> Optional[Dict[str, Any]]:
         """Get a conversation run by ID"""
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
@@ -78,7 +79,7 @@ class SQLiteStorage:
                     "messages": json.loads(row["messages"]),
                     "metadata": json.loads(row["metadata"])
                 }
-            return None 
+            return None
     
     def delete_run(self, run_id: str) -> None:
         """Delete a conversation run"""
@@ -109,32 +110,4 @@ class SQLiteStorage:
         """Get all run IDs"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute("SELECT run_id FROM assistant_runs ORDER BY created_at DESC")
-            return [row[0] for row in cursor.fetchall()]
-
-def get_storage() -> AssistantStorage:
-    """Get the appropriate storage implementation based on configuration"""
-    # Initialize database if auto-create is enabled
-    if not init_database():
-        raise RuntimeError("Failed to initialize database. Check logs for details.")
-    
-    try:
-        if db_settings.is_sqlite:
-            # 延迟导入以避免循环依赖
-            from ai.storage import SQLiteAssistantStorage
-            storage = SQLiteAssistantStorage()
-            # 测试数据库连接
-            storage.get_all_run_ids()  # 如果数据库有问题，这里会抛出异常
-            return storage
-        elif db_settings.is_postgres:
-            storage = PgAssistantStorage(
-                table_name="lyraios_storage",
-                db_url=db_settings.db_url
-            )
-            # 测试数据库连接
-            storage.get_all_run_ids()
-            return storage
-        else:
-            raise ValueError(f"Unsupported database type: {db_settings.DATABASE_TYPE}")
-    except Exception as e:
-        logger.error(f"Failed to create storage: {e}")
-        raise RuntimeError("[storage] Could not create assistant, is the database running?") 
+            return [row[0] for row in cursor.fetchall()] 

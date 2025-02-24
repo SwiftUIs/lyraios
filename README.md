@@ -364,3 +364,27 @@ python scripts/restore_db.py --backup-file backup.sql
 - Verify environment variables
 - Ensure database connectivity
 - Monitor system resources
+
+### Database Configuration
+
+The system supports both SQLite and PostgreSQL databases:
+
+1. **SQLite (Default)**
+```bash
+# SQLite Configuration
+DATABASE_TYPE=sqlite
+DATABASE_PATH=data/lyraios.db
+```
+
+2. **PostgreSQL**
+```bash
+# PostgreSQL Configuration
+DATABASE_TYPE=postgres
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=lyraios
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_password
+```
+
+The system will automatically use SQLite if no PostgreSQL configuration is provided.

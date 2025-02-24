@@ -1,7 +1,6 @@
 from typing import Optional
 from pydantic_settings import BaseSettings
 
-
 class AISettings(BaseSettings):
     """Lyraios settings that can be set using environment variables.
 
