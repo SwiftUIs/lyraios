@@ -10,11 +10,11 @@ logger = logging.getLogger(__name__)
 def main():
     """Initialize database"""
     try:
-        # 确保data目录存在
+        # Ensure data directory exists
         data_dir = Path.cwd() / "data"
         os.makedirs(data_dir, exist_ok=True)
         
-        # 初始化数据库
+        # Initialize database
         init_database()
         logger.info("Database initialization completed successfully")
         

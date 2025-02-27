@@ -31,7 +31,7 @@ class AISettings(BaseSettings):
     class Config:
         env_file = ".env"
         env_prefix = ""
-        extra = "ignore"  # 允许额外的环境变量
+        extra = "ignore"
 
 
 # Create AISettings object

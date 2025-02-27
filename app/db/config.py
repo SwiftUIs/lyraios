@@ -10,7 +10,7 @@ class DatabaseSettings(BaseSettings):
     DATABASE_TYPE: Literal["sqlite", "postgres"] = "sqlite"
     
     # SQLite settings
-    DATABASE_PATH: str = "data/lyraios.db"  # 默认相对路径
+    DATABASE_PATH: str = "data/lyraios.db"
     
     # PostgreSQL settings (optional)
     POSTGRES_HOST: Optional[str] = None
@@ -41,7 +41,7 @@ class DatabaseSettings(BaseSettings):
     def db_url(self) -> str:
         if self.is_sqlite:
             db_path = self.absolute_db_path
-            # 确保数据目录存在
+            # Ensure data directory exists
             os.makedirs(os.path.dirname(db_path), exist_ok=True)
             return f"sqlite:///{db_path}"
         elif self.is_postgres and all([
@@ -54,11 +54,11 @@ class DatabaseSettings(BaseSettings):
         else:
             raise ValueError("Invalid database configuration")
 
-    # 使用新的 SettingsConfigDict 配置方式
+    # Use new SettingsConfigDict configuration method
     model_config = SettingsConfigDict(
         env_file=".env",
         env_prefix="",
-        extra="allow"  # 允许额外的环境变量
+        extra="allow"  # Allow extra environment variables
     )
 
 # Create global settings instance

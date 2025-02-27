@@ -4,11 +4,12 @@ from pathlib import Path
 import sqlite3
 import json
 from datetime import datetime
-from phi.storage.assistant.base import AssistantStorage
+from phi.storage.assistant.base import AssistantStorage as PhiAssistantStorage
 from phi.storage.assistant.postgres import PgAssistantStorage
 from .config import db_settings
 from .init import init_database
 import logging
+from phi.assistant import AssistantRun
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ class SQLiteStorage:
     
     def _init_db(self):
         """Initialize database tables"""
-        # 确保目录存在
+        # Ensure directory exists
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         
         with sqlite3.connect(self.db_path) as conn:
@@ -111,7 +112,7 @@ class SQLiteStorage:
             cursor = conn.execute("SELECT run_id FROM assistant_runs ORDER BY created_at DESC")
             return [row[0] for row in cursor.fetchall()]
 
-def get_storage() -> AssistantStorage:
+def get_storage() -> PhiAssistantStorage:
     """Get the appropriate storage implementation based on configuration"""
     # Initialize database if auto-create is enabled
     if not init_database():
@@ -119,22 +120,88 @@ def get_storage() -> AssistantStorage:
     
     try:
         if db_settings.is_sqlite:
-            # 延迟导入以避免循环依赖
+            # Delay import to avoid circular dependency
             from ai.storage import SQLiteAssistantStorage
             storage = SQLiteAssistantStorage()
-            # 测试数据库连接
-            storage.get_all_run_ids()  # 如果数据库有问题，这里会抛出异常
+            # Test database connection
+            storage.get_all_run_ids()  # If database has issues, this will raise an exception
             return storage
         elif db_settings.is_postgres:
             storage = PgAssistantStorage(
                 table_name="lyraios_storage",
                 db_url=db_settings.db_url
             )
-            # 测试数据库连接
+            # Test database connection
             storage.get_all_run_ids()
             return storage
         else:
             raise ValueError(f"Unsupported database type: {db_settings.DATABASE_TYPE}")
     except Exception as e:
         logger.error(f"Failed to create storage: {e}")
-        raise RuntimeError("[storage] Could not create assistant, is the database running?") 
+        raise RuntimeError("[storage] Could not create assistant, is the database running?")
+
+class AssistantStorage(PhiAssistantStorage):
+    """Assistant storage implementation"""
+    
+    def __init__(self):
+        """Initialize storage"""
+        self.runs = {}  # In-memory storage for development
+    
+    def create(self, messages: List[Dict[str, Any]], metadata: Dict[str, Any], 
+               user_id: Optional[str] = None, assistant_name: str = "LYRAIOS") -> str:
+        """Create a new run"""
+        run_id = f"run_{len(self.runs) + 1}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        self.runs[run_id] = {
+            "run_id": run_id,
+            "messages": messages,
+            "metadata": metadata,
+            "user_id": user_id,
+            "assistant_name": assistant_name,
+            "created_at": datetime.now().isoformat()
+        }
+        return run_id
+    
+    def get(self, run_id: str) -> Optional[AssistantRun]:
+        """Get a run by ID"""
+        if run_id in self.runs:
+            data = self.runs[run_id]
+            return AssistantRun(
+                run_id=run_id,
+                messages=data["messages"],
+                metadata=data["metadata"],
+                user_id=data["user_id"],
+                assistant_name=data["assistant_name"]
+            )
+        return None
+    
+    def update(self, run_id: str, messages: List[Dict[str, Any]], metadata: Dict[str, Any]) -> None:
+        """Update a run"""
+        if run_id in self.runs:
+            self.runs[run_id]["messages"] = messages
+            self.runs[run_id]["metadata"] = metadata
+    
+    def get_all_run_ids(self, user_id: Optional[str] = None) -> List[str]:
+        """Get all run IDs"""
+        if user_id:
+            return [run_id for run_id, data in self.runs.items() 
+                   if data.get("user_id") == user_id]
+        return list(self.runs.keys())
+    
+    def get_all_runs(self, user_id: Optional[str] = None) -> List[AssistantRun]:
+        """Get all runs"""
+        runs = []
+        for run_id, data in self.runs.items():
+            if user_id is None or data.get("user_id") == user_id:
+                runs.append(AssistantRun(
+                    run_id=run_id,
+                    messages=data["messages"],
+                    metadata=data["metadata"],
+                    user_id=data["user_id"],
+                    assistant_name=data["assistant_name"]
+                ))
+        return runs
+    
+    def delete(self, run_id: str) -> None:
+        """Delete a run"""
+        if run_id in self.runs:
+            del self.runs[run_id] 

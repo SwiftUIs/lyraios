@@ -7,8 +7,6 @@ from pydantic_core.core_schema import FieldValidationInfo
 
 class ApiSettings(BaseSettings):
     """Api settings that can be set using environment variables.
-
-    Reference: https://pydantic-docs.helpmanual.io/usage/settings/
     """
 
     # Api title and version
@@ -41,9 +39,6 @@ class ApiSettings(BaseSettings):
     @field_validator("cors_origin_list", mode="before")
     def set_cors_origin_list(cls, cors_origin_list, info: FieldValidationInfo):
         valid_cors = cors_origin_list or []
-
-        # Add phidata to cors origin list
-        valid_cors.extend(["https://phidata.app", "https://www.phidata.app"])
 
         runtime_env = info.data.get("runtime_env")
         if runtime_env == "dev":

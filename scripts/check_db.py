@@ -18,7 +18,7 @@ def check_database():
             db_path = db_settings.absolute_db_path
             logger.info(f"Database path: {db_path}")
             
-            # 检查目录权限
+            # Check directory permissions
             db_dir = os.path.dirname(db_path)
             if not os.path.exists(db_dir):
                 logger.warning(f"Database directory does not exist: {db_dir}")
@@ -26,13 +26,13 @@ def check_database():
                 logger.error(f"No write permission for directory: {db_dir}")
                 return False
                 
-            # 检查文件权限
+            # Check file permissions
             if os.path.exists(db_path):
                 if not os.access(db_path, os.W_OK):
                     logger.error(f"No write permission for database file: {db_path}")
                     return False
         
-        # 测试存储连接
+        # Test storage connection
         storage = get_storage()
         storage.get_all_run_ids()
         

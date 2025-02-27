@@ -17,7 +17,7 @@ class SQLiteStorage(BaseStorage):
     
     def _init_db(self):
         """Initialize database tables"""
-        # 确保目录存在
+        # Ensure directory exists
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         
         with sqlite3.connect(self.db_path) as conn:

@@ -5,7 +5,7 @@ from fastapi.responses import StreamingResponse
 from phi.assistant import Assistant, AssistantRun
 from pydantic import BaseModel
 
-from api.routes.endpoints import endpoints
+from app.api.routes.endpoints import endpoints
 from ai.assistants import get_lyraios
 from phi.utils.log import logger
 

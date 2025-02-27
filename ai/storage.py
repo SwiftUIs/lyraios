@@ -9,9 +9,9 @@ logger = logging.getLogger(__name__)
 class AssistantStorageAdapter(AssistantStorage):
     def __init__(self):
         try:
-            from db.factory import get_storage
+            from app.db.factory import get_storage
             self._storage = get_storage()
-            # 验证存储是否可用
+            # Verify if storage is available
             self._storage.get_all_run_ids()
         except Exception as e:
             logger.error(f"Failed to initialize storage adapter: {e}")
@@ -39,10 +39,10 @@ class AssistantStorageAdapter(AssistantStorage):
         try:
             result = self._storage.get_run(run_id)
             if result:
-                # 从存储的数据中提取元数据
+                # Extract metadata from stored data
                 metadata = result.get("metadata", {})
                 
-                # 创建 AssistantRun 对象
+                # Create AssistantRun object
                 return AssistantRun(
                     run_id=result["run_id"],
                     name=result.get("assistant_name"),
@@ -65,17 +65,17 @@ class AssistantStorageAdapter(AssistantStorage):
     ) -> AssistantRun:
         """Update or insert a run using an AssistantRun object and return the updated run."""
         try:
-            # 确保传入的是 AssistantRun 对象
+            # Ensure the input is an AssistantRun object
             if not isinstance(row, AssistantRun):
                 raise TypeError("Expected an AssistantRun object for the 'row' parameter.")
 
-            # 提取 AssistantRun 对象的属性
+            # Extract properties from AssistantRun object
             run_id = row.run_id
             
-            # 从 kwargs 中获取 messages，因为 AssistantRun 不存储消息
+            # Get messages from kwargs, as AssistantRun does not store messages
             messages = kwargs.get("messages", [])
             
-            # 构建元数据字典
+            # Build metadata dictionary
             metadata = {
                 "assistant_data": row.assistant_data,
                 "run_data": row.run_data,
@@ -87,11 +87,11 @@ class AssistantStorageAdapter(AssistantStorage):
                 "updated_at": row.updated_at.isoformat() if row.updated_at else None
             }
 
-            # 确保必需的参数存在
+            # Ensure required parameters exist
             if not run_id:
                 raise ValueError("run_id is required")
 
-            # 调用底层存储方法
+            # Call underlying storage method
             self._storage.save_run(
                 run_id=run_id,
                 messages=messages,
@@ -101,7 +101,7 @@ class AssistantStorageAdapter(AssistantStorage):
             )
             logger.debug(f"Upserted run with ID: {run_id}")
 
-            # 返回更新后的 AssistantRun 对象
+            # Return the updated AssistantRun object
             return row
         except Exception as e:
             logger.error(f"Failed to upsert run: {e}")
@@ -156,5 +156,5 @@ class AssistantStorageAdapter(AssistantStorage):
             logger.error(f"Failed to get all runs: {e}")
             return []
 
-# 导出类名
+# Export class name
 __all__ = ['AssistantStorageAdapter'] 

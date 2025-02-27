@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.routes.endpoints import endpoints
+from app.api.routes.endpoints import endpoints
 
 ######################################################
 ## Router for health checks

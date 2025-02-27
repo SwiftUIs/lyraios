@@ -69,6 +69,102 @@ LYRAIOS (LLM-based Your Reliable AI Operating System) is an advanced AI assistan
   - Rate limiting and quota management
   - Secure data storage
 
+## Roadmap 📍
+
+### Core Platform
+- ✅ Basic AI Assistant Framework
+- ✅ Streamlit Web Interface
+- ✅ FastAPI Backend
+- ✅ Database Integration (SQLite/PostgreSQL)
+- ✅ OpenAI Integration
+- ✅ Docker Containerization
+- ✅ Environment Configuration System
+- 🔄 Multi-modal Input Processing (Partial)
+- 🚧 Advanced Error Handling & Recovery
+- 🚧 Performance Monitoring Dashboard
+- 📅 Distributed Task Queue
+- 📅 Horizontal Scaling Support
+- 📅 Custom Plugin Architecture
+
+### AI Process Management
+- ✅ Basic Task Allocation
+- ✅ Multi-assistant Team Structure
+- ✅ State Management & Persistence
+- 🔄 Dynamic Task Scheduling (Partial)
+- 🚧 Resource Optimization
+- 🚧 Load Balancing
+- 📅 Process Visualization
+- 📅 Workflow Designer
+- 📅 Advanced Process Analytics
+
+### Memory System
+- ✅ Short-term Conversation Memory
+- ✅ Basic Vector Database Integration
+- ✅ Session Context Preservation
+- 🔄 Knowledge Base Integration (Partial)
+- 🚧 Memory Optimization Algorithms
+- 🚧 Cross-session Learning
+- 📅 Hierarchical Memory Architecture
+- 📅 Forgetting Mechanisms
+- 📅 Memory Compression
+
+### Tools & Integrations
+- ✅ Calculator
+- ✅ Web Search (DuckDuckGo)
+- ✅ Financial Analysis Tools
+- ✅ File Management
+- ✅ Research Tools (Exa)
+- ✅ PDF Document Processing
+- ✅ Website Content Integration
+- 🔄 Python Code Execution (Partial)
+- 🚧 Advanced Data Visualization
+- 🚧 External API Integration Framework
+- 📅 Image Generation & Processing
+- 📅 Audio Processing
+- 📅 Video Analysis
+
+### Security & Access Control
+- ✅ Basic API Key Management
+- ✅ Simple Authentication
+- 🔄 Authorization System (Partial)
+- 🚧 Rate Limiting
+- 🚧 Quota Management
+- 📅 Role-based Access Control
+- 📅 Audit Logging
+- 📅 Compliance Reporting
+
+### Open Protocol Architecture
+- 🔄 Module Interface Standards (Partial)
+- 🚧 Third-party Tool Integration Protocol
+- 🚧 Service Discovery Mechanism
+- 📅 Universal Connector Framework
+- 📅 Protocol Validation System
+- 📅 Compatibility Layer for Legacy Systems
+
+### Multi-Agent Collaboration
+- ✅ Basic Team Structure
+- 🔄 Inter-agent Communication (Partial)
+- 🚧 Task Decomposition Engine
+- 🚧 Conflict Resolution System
+- 📅 Collaborative Planning
+- 📅 Emergent Behavior Analysis
+- 📅 Agent Specialization Framework
+
+### Cross-Platform Support
+- ✅ Web Interface
+- 🔄 API Access (Partial)
+- 🚧 Mobile Responsiveness
+- 📅 Desktop Application
+- 📅 CLI Interface
+- 📅 IoT Device Integration
+- 📅 Voice Assistant Integration
+
+### Legend
+- ✅ Completed
+- 🔄 Partially Implemented
+- 🚧 In Development
+- 📅 Planned
+
 ## Setup Workspace
 ```sh
 # Clone the repo

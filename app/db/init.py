@@ -11,19 +11,19 @@ logger = logging.getLogger(__name__)
 def init_sqlite_db(db_path: str) -> bool:
     """Initialize SQLite database and tables"""
     try:
-        # 确保数据目录存在并有正确的权限
+        # Ensure data directory exists and has correct permissions
         db_dir = os.path.dirname(db_path)
         os.makedirs(db_dir, exist_ok=True)
         
         logger.info(f"Initializing SQLite database at {db_path}")
         
-        # 测试文件是否可写
+        # Test file write permission
         if os.path.exists(db_path):
             if not os.access(db_path, os.W_OK):
                 logger.error(f"No write permission for database file: {db_path}")
                 return False
         else:
-            # 测试目录是否可写
+            # Test directory write permission
             if not os.access(db_dir, os.W_OK):
                 logger.error(f"No write permission for directory: {db_dir}")
                 return False
