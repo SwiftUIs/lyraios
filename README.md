@@ -254,14 +254,28 @@ phi ws down
 ```
 lyraios/
 ├── ai/                     # AI core functionality
-│   ├── assistants.py      # Assistant implementations
-│   └── settings.py        # AI-specific settings
-├── api/                   # API layer
-│   ├── middleware/        # API middleware
-│   └── routes/           # API endpoints
-├── app/                   # Main application
-├── config/               # Configuration
-└── scripts/              # Utility scripts
+│   ├── assistants.py       # Assistant implementations
+│   ├── llm/                # LLM integration
+│   └── tools/              # AI tools implementations
+├── app/                    # Main application
+│   ├── components/         # UI components
+│   ├── config/             # Application configuration
+│   ├── db/                 # Database models and storage
+│   ├── styles/             # UI styling
+│   ├── utils/              # Utility functions
+│   └── main.py             # Main application entry point
+├── assets/                 # Static assets like images
+├── data/                   # Data storage
+├── tests/                  # Test suite
+├── workspace/              # Workspace configuration
+│   ├── dev_resources/      # Development resources
+│   ├── settings.py         # Workspace settings
+│   └── secrets/            # Secret configuration (gitignored)
+├── docker/                 # Docker configuration
+├── scripts/                # Utility scripts
+├── .env                    # Environment variables
+├── requirements.txt        # Python dependencies
+└── README.md               # Project documentation
 ```
 
 ### Environment Configuration
