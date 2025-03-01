@@ -7,6 +7,7 @@ import { ChatMessage } from './ChatMessage';
 import { v4 as uuidv4 } from 'uuid';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getLLMResponse } from '@/services/llmService';
 
 interface ChatDialogProps {
     isOpen: boolean;
@@ -49,7 +50,7 @@ export function ChatDialog({ isOpen, onClose, app }: ChatDialogProps) {
         }
     }, [isOpen]);
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (!inputValue.trim() || !app) return;
 
         // Add user message
@@ -66,42 +67,52 @@ export function ChatDialog({ isOpen, onClose, app }: ChatDialogProps) {
         // Show app is typing
         setIsTyping(true);
 
-        // Simulate app response
-        setTimeout(() => {
-            setIsTyping(false);
+        try {
+            // Convert messages to format expected by LLM API
+            const messageHistory = messages.map(msg => ({
+                role: msg.sender === 'user' ? 'user' : 'assistant',
+                content: msg.content
+            }));
 
+            // Add the new user message
+            messageHistory.push({
+                role: 'user',
+                content: userMessage.content
+            });
+
+            // Get response from LLM API
+            const response = await getLLMResponse(app, userMessage.content, messageHistory);
+
+            // Create app message with response
             const appMessage: Message = {
                 id: uuidv4(),
-                content: getRandomResponse(app, inputValue),
+                content: response,
                 sender: 'app',
                 timestamp: new Date()
             };
 
             setMessages((prev) => [...prev, appMessage]);
-        }, 1500);
+        } catch (error) {
+            console.error('Error getting response:', error);
+
+            // Fallback response in case of error
+            const errorMessage: Message = {
+                id: uuidv4(),
+                content: `I'm sorry, I'm having trouble processing your request right now. Please try again later.`,
+                sender: 'app',
+                timestamp: new Date()
+            };
+
+            setMessages((prev) => [...prev, errorMessage]);
+        } finally {
+            setIsTyping(false);
+        }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             handleSendMessage();
         }
-    };
-
-    // Generate random response
-    const getRandomResponse = (app: AppConfig, query: string): string => {
-        // const responses = [
-        //     `I understand you're asking about "${query}". Let me help you with that.`,
-        //     `Thanks for your message! I'll process your request about "${query}" right away.`,
-        //     `I'm working on your question about "${query}". Here's what I found...`,
-        //     `That's an interesting question about "${query}". Let me share some insights.`,
-        //     `I'm analyzing your request about "${query}". Here's my response.`
-        // ];
-        const responses = [
-            'I am a powerful artificial intelligence assistant operating system, integrating advanced technologies such as speech recognition, natural language processing, machine vision, and deep learning. Through multimodal interactions (such as voice, vision, and commands), I can engage in natural conversations with you. I can provide personalized services based on your habits and am widely applied in smart homes, office automation, education, healthcare, and other fields, offering you an efficient and convenient intelligent experience.'
-        ]
-
-
-        return `${responses[Math.floor(Math.random() * responses.length)]} (From ${app.name})`;
     };
 
     if (!app) return null;
