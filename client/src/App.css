@@ -1,0 +1,1101 @@
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  text-align: left;
+}
+
+/* Global Styles */
+:root {
+  --taskbar-height: 48px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Desktop Styles */
+.desktop-container {
+  width: 100%;
+  height: calc(100vh - var(--taskbar-height));
+  position: relative;
+  overflow: auto;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Desktop Time Style Updates */
+.desktop-time-container {
+  position: absolute;
+  bottom: 60px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  z-index: 10;
+}
+
+.desktop-time {
+  font-size: 3rem;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.desktop-date {
+  font-size: 1.2rem;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 300;
+  margin-top: 5px;
+}
+
+.desktop-timezone {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 300;
+  margin-top: 2px;
+}
+
+.desktop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  margin-top: 60px;
+  position: relative;
+  z-index: 2;
+}
+
+/* App Icon Styles */
+.app-icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  z-index: 1;
+}
+
+.app-icon-container:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  z-index: 10;
+}
+
+.app-icon-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.app-icon-circle-hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.app-icon-circle .material-symbols-rounded {
+  font-size: 28px;
+  color: white;
+}
+
+.app-icon-name {
+  font-size: 12px;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-tooltip {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Taskbar Styles */
+.taskbar {
+  height: var(--taskbar-height);
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 100;
+}
+
+.taskbar-left,
+.taskbar-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Taskbar Button Styles Optimization */
+.taskbar-start-button,
+.taskbar-search-button {
+  height: 40px;
+  width: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  background-color: transparent;
+  transition: background-color 0.2s;
+  padding: 0;
+  border: none;
+}
+
+.taskbar-start-button:hover,
+.taskbar-search-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.taskbar-start-button .material-symbols-rounded,
+.taskbar-search-button .material-symbols-rounded {
+  font-size: 24px;
+  color: white;
+}
+
+/* Taskbar Quick Apps Area Styles */
+.taskbar-quick-apps {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.taskbar-quick-apps .material-symbols-rounded {
+  font-size: 22px;
+  color: white;
+  margin: 0 8px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.taskbar-quick-apps .material-symbols-rounded:hover {
+  opacity: 1;
+}
+
+/* Taskbar time and date styles */
+.taskbar-time {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  margin-right: 8px;
+}
+
+.taskbar-date {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-right: 16px;
+}
+
+.taskbar-icons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.taskbar-icons .material-symbols-rounded {
+  font-size: 18px;
+  color: white;
+}
+
+.start-menu {
+  position: absolute;
+  bottom: calc(var(--taskbar-height) + 8px);
+  left: 8px;
+  width: 380px;
+  background-color: rgba(33, 33, 33, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  z-index: 100;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.start-menu-header {
+  padding: 16px 20px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.start-menu-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.start-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 12px;
+  overflow-y: auto;
+  max-height: 320px;
+}
+
+.start-menu-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.start-menu-app:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.start-menu-app-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.start-menu-app-icon .material-symbols-rounded {
+  font-size: 20px;
+  color: white;
+}
+
+.start-menu-app-name {
+  font-size: 11px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.start-menu-footer {
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+}
+
+.start-menu-all-apps {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: white;
+  font-size: 14px;
+  padding: 8px 0;
+}
+
+.start-menu-all-apps:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.start-menu-all-apps .material-symbols-rounded {
+  font-size: 18px;
+}
+
+/* Search Function Styles */
+.search-container {
+  position: absolute;
+  bottom: calc(var(--taskbar-height) + 10px);
+  left: 60px;
+  background-color: rgba(30, 30, 30, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  z-index: 200;
+  overflow: hidden;
+}
+
+.search-input {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.search-results {
+  margin-top: 15px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.search-result-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.search-result-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.search-result-icon .material-symbols-rounded {
+  font-size: 18px;
+  color: white;
+}
+
+.search-result-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-result-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.search-result-description {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-no-results {
+  padding: 15px 10px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Chat Dialog Styles Update */
+.chat-dialog-content {
+  max-width: 90vw;
+  width: 500px;
+  height: 80vh;
+  max-height: 700px;
+  padding: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-dialog-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.chat-dialog-title {
+  display: flex;
+  align-items: center;
+}
+
+.chat-dialog-app-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.chat-dialog-app-icon .material-symbols-rounded {
+  font-size: 20px;
+  color: white;
+}
+
+.chat-dialog-title-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-dialog-app-name {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+.chat-dialog-app-status {
+  font-size: 12px;
+  color: #4caf50;
+}
+
+.chat-dialog-close-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.chat-dialog-close-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.chat-messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-size: cover;
+  background-position: center;
+}
+
+.chat-date-divider {
+  text-align: center;
+  margin: 8px 0;
+  position: relative;
+}
+
+.chat-date-divider span {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #666;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.chat-message {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 8px;
+  max-width: 80%;
+}
+
+.chat-message-app {
+  align-self: flex-start;
+}
+
+.chat-message-user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.chat-message-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+.chat-message-avatar .material-symbols-rounded {
+  font-size: 18px;
+  color: white;
+}
+
+.chat-message-avatar-user {
+  background-color: #e0e0e0;
+}
+
+.chat-message-avatar-user .material-symbols-rounded {
+  color: #666;
+}
+
+.chat-message-bubble {
+  padding: 12px 16px;
+  border-radius: 18px;
+  position: relative;
+  max-width: calc(100% - 60px);
+  word-break: break-word;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.chat-message-bubble-user {
+  background-color: #1a73e8;
+  color: white;
+  border-bottom-right-radius: 4px;
+  margin-right: 8px;
+}
+
+.chat-message-bubble-app {
+  background-color: white;
+  color: #333;
+  border-bottom-left-radius: 4px;
+  margin-left: 8px;
+}
+
+.chat-message-time {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-top: 4px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.chat-message-status {
+  display: inline-flex;
+}
+
+.chat-message-status .material-symbols-rounded {
+  font-size: 12px;
+  color: #8ab4f8;
+}
+
+.chat-typing-indicator {
+  display: flex;
+  align-items: flex-end;
+  align-self: flex-start;
+  margin-bottom: 8px;
+}
+
+.chat-typing-dots {
+  background-color: white;
+  padding: 12px 16px;
+  border-radius: 18px;
+  border-bottom-left-radius: 4px;
+  margin-left: 8px;
+  display: flex;
+  gap: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.chat-typing-dots span {
+  width: 8px;
+  height: 8px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  animation: typing-animation 1.4s infinite ease-in-out both;
+}
+
+.chat-typing-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.chat-typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.chat-typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing-animation {
+
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.6;
+  }
+
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: white;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  gap: 8px;
+}
+
+.chat-input {
+  flex: 1;
+  height: 40px;
+  border-radius: 20px;
+  padding: 0 16px;
+  background-color: #f5f5f5;
+  border: none;
+}
+
+.chat-input:focus {
+  background-color: #f0f0f0;
+  box-shadow: none;
+  border: none;
+  outline: none;
+}
+
+.chat-send-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.chat-send-button .material-symbols-rounded {
+  font-size: 18px;
+}
+
+.chat-send-button:disabled {
+  opacity: 0.5;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .desktop-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+  }
+
+  .app-icon-circle {
+    width: 50px;
+    height: 50px;
+  }
+
+  .desktop-time {
+    font-size: 2rem;
+  }
+
+  .chat-dialog-content {
+    width: 100%;
+    height: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+}
+
+/* Search Interaction Styles */
+.taskbar-search-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-right: 10px;
+}
+
+.taskbar-search-input-container {
+  position: relative;
+}
+
+.taskbar-search-input {
+  height: 36px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  padding: 0 12px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+
+.taskbar-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  background-color: rgba(30, 30, 30, 0.9);
+  backdrop-filter: blur(20px);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  z-index: 200;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Taskbar Quick Apps Area Styles */
+.taskbar-quick-apps {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+/* Context Menu Styles */
+.context-menu {
+  position: fixed;
+  width: 240px;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.context-menu-group {
+  padding: 4px 0;
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  cursor: pointer;
+  position: relative;
+}
+
+.context-menu-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.context-menu-item-active {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.context-menu-item .material-symbols-rounded {
+  font-size: 18px;
+  margin-right: 12px;
+  color: #555;
+}
+
+.context-menu-arrow {
+  margin-left: auto;
+  font-size: 10px;
+  color: #777;
+}
+
+.context-menu-divider {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin: 4px 0;
+}
+
+.context-submenu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 200px;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  display: none;
+  z-index: 1001;
+}
+
+.context-menu-item:hover>.context-submenu {
+  display: block;
+}
+
+/* Different view modes for desktop grid */
+.desktop-grid-large {
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 20px;
+}
+
+.desktop-grid-medium {
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 16px;
+}
+
+.desktop-grid-small {
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 12px;
+}
+
+.desktop-grid-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  margin-top: 60px;
+}
+
+/* Different view modes for app icons */
+.app-icon-large .app-icon-circle {
+  width: 60px;
+  height: 60px;
+}
+
+.app-icon-medium .app-icon-circle {
+  width: 50px;
+  height: 50px;
+}
+
+.app-icon-medium .app-icon-circle .material-symbols-rounded {
+  font-size: 24px;
+}
+
+.app-icon-small .app-icon-circle {
+  width: 40px;
+  height: 40px;
+}
+
+.app-icon-small .app-icon-circle .material-symbols-rounded {
+  font-size: 20px;
+}
+
+.app-icon-list {
+  flex-direction: row;
+  width: 100%;
+  justify-content: flex-start;
+  padding: 8px 16px;
+}
+
+.app-icon-list .app-icon-circle {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  margin-bottom: 0;
+}
+
+.app-icon-list .app-icon-circle .material-symbols-rounded {
+  font-size: 16px;
+}
+
+.app-icon-list .app-icon-name {
+  color: #333;
+  text-shadow: none;
+  max-width: none;
+}
+
+/* Desktop Logo Styles */
+.desktop-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+  /* opacity: 0.8; */
+  transition: opacity 0.8s ease;
+}
+
+.desktop-logo img {
+  max-width: 600px;
+  max-height: 600px;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+}
+
+/* When hovering over the desktop, reduce the logo opacity to make it more subtle */
+.desktop-container:hover .desktop-logo {
+  opacity: 0.8;
+}
+
+/* Ensure the desktop grid is above the logo, but the content is not blocked */
+.desktop-grid {
+  position: relative;
+  z-index: 2;
+}
+
+/* Optimize toolbar button activation state */
+.taskbar-start-button.active,
+.taskbar-search-button.active,
+.taskbar-quick-apps span.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Optimize toolbar button focus state */
+.taskbar-start-button:focus,
+.taskbar-search-button:focus,
+.taskbar-quick-apps span:focus,
+.start-menu-all-apps:focus,
+.start-menu-app:focus,
+.search-result-item:focus,
+.chat-send-button:focus,
+.app-icon-container:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Optimize button activation state */
+.button:active,
+.button.active,
+.taskbar button:active,
+.taskbar button.active,
+.start-menu button:active,
+.start-menu button.active {
+  outline: none;
+  border: none;
+  box-shadow: none;
+  transform: scale(0.98);
+}
+
+/* Optimize app icon activation state */
+.app-icon-container:active,
+.app-icon-container.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Optimize start menu app activation state */
+.start-menu-app:active,
+.start-menu-app.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Optimize search result item activation state */
+.search-result-item:active,
+.search-result-item.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Optimize dialog button activation state */
+.dialog-button:active,
+.dialog-button.active,
+.chat-send-button:active,
+.chat-send-button.active {
+  outline: none;
+  border: none;
+  box-shadow: none;
+  transform: scale(0.98);
+}
+
+/* Loading screen styles */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%);
+  z-index: 9999;
+}
+
+.loading-logo {
+  margin-bottom: 30px;
+}
+
+.loading-logo img {
+  width: 150px;
+  height: auto;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 20px;
+}
+
+.loading-text {
+  color: white;
+  font-size: 18px;
+  font-weight: 300;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

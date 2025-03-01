@@ -23,21 +23,6 @@ ws_settings = WorkspaceSettings(
     prd_app_enabled=True,
     prd_db_enabled=True,
     prd_api_enabled=True,
-    # -*- AWS settings
-    # Region for AWS resources
-    aws_region="us-east-1",
-    # Availability Zones for AWS resources
-    aws_az1="us-east-1a",
-    aws_az2="us-east-1b",
-    # Subnet IDs in the aws_region
-    # subnet_ids=["subnet-xyz", "subnet-xyz"],
-    # -*- Image Settings
     # Name of the image to build/push/use
-    image_name="lyraios",
-    # Repository for the image
-    # image_repo="phidata",
-    # Build images locally
-    # build_images=True,
-    # Push images after building
-    # push_images=False
+    image_name="lyraios"
 )
