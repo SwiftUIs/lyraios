@@ -104,20 +104,20 @@ def get_lyraios(
         # Use custom model or default from settings
         model = model or model_settings.get_default_model()
         
-        # LLM to use for the Assistant
+    # LLM to use for the Assistant
         llm = create_llm()
         
         # Tools to add to the Assistant
         tools = []
         
-        # Extra instructions for using tools
+    # Extra instructions for using tools
         extra_instructions = []
         
         # Team members to add to the Assistant
         team = []
         
         # Add calculator tool
-        if calculator:
+    if calculator:
             tools.append(Calculator())
             extra_instructions.append(
                 "To perform calculations, use the `calculate` tool. "
@@ -125,7 +125,7 @@ def get_lyraios(
             )
         
         # Add DuckDuckGo search tool
-        if ddg_search:
+    if ddg_search:
             tools.append(DuckDuckGo())
             extra_instructions.append(
                 "To search the internet, use the `duckduckgo_search` tool. "
@@ -144,14 +144,14 @@ def get_lyraios(
         # Add finance tools
         if finance_tools:
             tools.append(YFinanceTools())
-            extra_instructions.append(
+        extra_instructions.append(
                 "To get financial data, use the `get_stock_price`, `get_stock_history`, and `get_stock_info` tools."
-            )
-        
+        )
+
         # Add Python assistant to the team
-        if python_assistant:
-            _python_assistant = PythonAssistant(
-                name="Python Assistant",
+    if python_assistant:
+        _python_assistant = PythonAssistant(
+            name="Python Assistant",
                 description="A Python expert that can help with coding tasks.",
                 instructions=[
                     "You are a Python expert that can help with coding tasks.",
@@ -162,14 +162,14 @@ def get_lyraios(
                 model=model,
                 temperature=temperature,
                 streaming=streaming,
-            )
-            team.append(_python_assistant)
-            extra_instructions.append(
+        )
+        team.append(_python_assistant)
+        extra_instructions.append(
                 "To get help with Python coding tasks, delegate the task to the `Python Assistant`."
-            )
+        )
         
         # Add research assistant to the team
-        if research_assistant:
+    if research_assistant:
             # Add Exa tools for research
             tools.append(ExaTools())
             extra_instructions.append(
@@ -177,8 +177,8 @@ def get_lyraios(
             )
             
             _research_assistant = PhiAssistant(
-                name="Research Assistant",
-                instructions=[
+            name="Research Assistant",
+            instructions=[
                     "You are a research assistant that can help with finding and summarizing information.",
                     "When asked to research a topic, use the `exa_search` tool to find relevant information.",
                     "Provide comprehensive, well-structured reports with citations.",
@@ -186,13 +186,13 @@ def get_lyraios(
                 model=model,
                 temperature=temperature,
                 streaming=streaming,
-            )
-            team.append(_research_assistant)
-            extra_instructions.append(
-                "To write a research report, delegate the task to the `Research Assistant`. "
-                "Return the report in the <report_format> to the user as is, without any additional text like 'here is the report'."
-            )
-        
+        )
+        team.append(_research_assistant)
+        extra_instructions.append(
+            "To write a research report, delegate the task to the `Research Assistant`. "
+            "Return the report in the <report_format> to the user as is, without any additional text like 'here is the report'."
+        )
+
         # Use SQLite storage
         try:
             # Initialize SQLite adapter
@@ -207,17 +207,17 @@ def get_lyraios(
         
         # Create assistant instance
         assistant = PhiAssistant(
-            llm=llm,
-            name="LYRAIOS",
-            run_id=run_id,
-            user_id=user_id,
+        llm=llm,
+        name="LYRAIOS",
+        run_id=run_id,
+        user_id=user_id,
             storage=storage,
             instructions=LYRAIOS_INSTRUCTIONS,
-            tools=tools,
-            team=team,
-            markdown=True,
-            debug_mode=debug_mode,
-        )
+        tools=tools,
+        team=team,
+        markdown=True,
+        debug_mode=debug_mode,
+    )
         
         return assistant
         

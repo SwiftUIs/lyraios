@@ -1,0 +1,205 @@
+{
+    "schema_version": "1.0",
+    "tool_id": "calculator",
+    "name": "Calculator",
+    "version": "1.0.0",
+    "description": "Basic calculator tool for arithmetic operations",
+    "author": "LYRAIOS Team",
+    "homepage": "https://lyraios.ai/tools/calculator",
+    "license": "MIT",
+    "categories": [
+        "math",
+        "utility"
+    ],
+    "tags": [
+        "calculator",
+        "arithmetic",
+        "math"
+    ],
+    "capabilities": [
+        {
+            "capability_id": "add",
+            "name": "Add",
+            "description": "Add two numbers",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "a": {
+                        "type": "number",
+                        "description": "First number"
+                    },
+                    "b": {
+                        "type": "number",
+                        "description": "Second number"
+                    }
+                },
+                "required": [
+                    "a",
+                    "b"
+                ]
+            },
+            "returns": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "number",
+                        "description": "Sum of a and b"
+                    }
+                }
+            },
+            "examples": [
+                {
+                    "input": {
+                        "a": 2,
+                        "b": 3
+                    },
+                    "output": {
+                        "result": 5
+                    }
+                }
+            ]
+        },
+        {
+            "capability_id": "subtract",
+            "name": "Subtract",
+            "description": "Subtract one number from another",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "a": {
+                        "type": "number",
+                        "description": "First number"
+                    },
+                    "b": {
+                        "type": "number",
+                        "description": "Second number"
+                    }
+                },
+                "required": [
+                    "a",
+                    "b"
+                ]
+            },
+            "returns": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "number",
+                        "description": "Difference of a and b"
+                    }
+                }
+            },
+            "examples": [
+                {
+                    "input": {
+                        "a": 5,
+                        "b": 3
+                    },
+                    "output": {
+                        "result": 2
+                    }
+                }
+            ]
+        },
+        {
+            "capability_id": "multiply",
+            "name": "Multiply",
+            "description": "Multiply two numbers",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "a": {
+                        "type": "number",
+                        "description": "First number"
+                    },
+                    "b": {
+                        "type": "number",
+                        "description": "Second number"
+                    }
+                },
+                "required": [
+                    "a",
+                    "b"
+                ]
+            },
+            "returns": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "number",
+                        "description": "Product of a and b"
+                    }
+                }
+            },
+            "examples": [
+                {
+                    "input": {
+                        "a": 2,
+                        "b": 3
+                    },
+                    "output": {
+                        "result": 6
+                    }
+                }
+            ]
+        },
+        {
+            "capability_id": "divide",
+            "name": "Divide",
+            "description": "Divide one number by another",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "a": {
+                        "type": "number",
+                        "description": "Numerator"
+                    },
+                    "b": {
+                        "type": "number",
+                        "description": "Denominator"
+                    }
+                },
+                "required": [
+                    "a",
+                    "b"
+                ]
+            },
+            "returns": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "number",
+                        "description": "Quotient of a and b"
+                    }
+                }
+            },
+            "examples": [
+                {
+                    "input": {
+                        "a": 6,
+                        "b": 3
+                    },
+                    "output": {
+                        "result": 2
+                    }
+                }
+            ]
+        }
+    ],
+    "authentication": {
+        "type": "none",
+        "required": false
+    },
+    "rate_limits": {
+        "requests_per_minute": 100
+    },
+    "dependencies": [],
+    "platform_requirements": {
+        "min_lyraios_version": "0.1.0",
+        "supported_platforms": [
+            "linux",
+            "macos",
+            "windows"
+        ]
+    }
+}

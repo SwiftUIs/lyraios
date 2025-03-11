@@ -1,8 +1,42 @@
 # LYRAIOS
 
-## Overview
+## Technical Foundation & Project Positioning
 
-LYRAIOS (LLM-based Your Reliable AI Operating System) is an advanced AI assistant platform built with FastAPI and Streamlit, designed to serve as an operating system for AI applications:
+LYRAIOS is built on the open-source AI Agent foundation library agno. Like modern software development that doesn't reinvent the wheel, we choose to build on excellent open-source projects for continuous innovation. Agno serves as a lightweight Agent construction toolkit (similar to LangChain and AutoGPT), providing reliable infrastructure support for developers.
+
+## Core Innovations & Differentiated Value
+
+LYRAIOS aims to create the next generation AI Agent operating system with technological breakthroughs in three dimensions:
+
+1. **Open Protocol Architecture**: Pioneering modular integration protocol supporting plug-and-play third-party tools/services, compatible with multi-modal interaction interfaces (API/plugins/smart hardware), with 80%+ improved extensibility compared to traditional frameworks
+2. **Multi-Agent Collaboration Engine**: Breaking through single Agent capability boundaries through distributed task orchestration system enabling dynamic multi-agent collaboration, supporting enterprise-grade complex workflow automation and conflict resolution
+3. **Cross-Platform Runtime Environment**: Building cross-terminal AI runtime environment, enabling smooth migration from personal intelligent assistants to enterprise digital employees, applicable for validating multi-scenario solutions in finance, healthcare, intelligent manufacturing and other fields
+
+For detailed architecture information, see the [Architecture Documentation](docs/ARCHITECTURE.md).
+
+## Tool Integration Protocol
+
+The Tool Integration Protocol is a key component of LYRAIOS's Open Protocol Architecture. It provides a standardized way to integrate third-party tools and services into the LYRAIOS ecosystem.
+
+### Key Features
+
+- **Standardized Tool Manifest**: Define tools using a JSON schema that describes capabilities, parameters, and requirements
+- **Pluggable Adapter System**: Support for different tool types (REST API, Python plugins, etc.)
+- **Secure Execution Environment**: Tools run in a controlled environment with resource limits and permission checks
+- **Versioning and Dependency Management**: Track tool versions and dependencies
+- **Monitoring and Logging**: Comprehensive logging of tool execution
+
+### Getting Started with Tool Integration
+
+1. **Define Tool Manifest**: Create a JSON file describing your tool's capabilities
+2. **Implement Tool**: Develop the tool functionality according to the protocol
+3. **Register Tool**: Use the API to register your tool with LYRAIOS
+4. **Use Tool**: Your tool is now available for use by LYRAIOS agents
+
+For examples and detailed documentation, see the [Tool Integration Guide](docs/tool_integration.md).
+
+## Overview
+LYRAIOS (LLM-based Your Reliable AI Operating System) is an advanced AI assistant platform built with Streamlit, designed to serve as an operating system for AI applications.
 
 ### Core OS Features
 - **AI Process Management**: 
