@@ -2,7 +2,7 @@
 
 ## Overview & Technical Foundation
 
-LYRAIOS is built on the open-source AI Agent foundation library agno. Like modern software development that doesn't reinvent the wheel, we choose to build on excellent open-source projects for continuous innovation. Agno serves as a lightweight Agent construction toolkit (similar to LangChain and AutoGPT), providing reliable infrastructure support for developers.
+LYRAI is a Model Context Protocol (MCP) operating system for multi-AI AGENTs designed to extend the functionality of AI applications (such as Claude Desktop and Cursor) by enabling them to interact with financial networks and blockchain public chains. The server offers a range of advanced AI assistants, including blockchain public chain operations (SOLANA, ETH, etc. - retrieving wallet addresses, listing wallet balances, transferring funds, deploying smart contracts, on-chain lending, calling contract functions, managing tokens), fintech market analysis and summary reports, and learning and training systems for the education sector.
 
 ## Core Innovations & Differentiated Value
 
@@ -677,3 +677,11 @@ POSTGRES_PASSWORD=your_password
 ```
 
 The system will automatically use SQLite if no PostgreSQL configuration is provided.
+
+## Contributing
+
+We welcome contributions! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for details.
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
