@@ -1,6 +1,6 @@
 # LYRAIOS
 
-## Technical Foundation & Project Positioning
+## Overview & Technical Foundation
 
 LYRAIOS is built on the open-source AI Agent foundation library agno. Like modern software development that doesn't reinvent the wheel, we choose to build on excellent open-source projects for continuous innovation. Agno serves as a lightweight Agent construction toolkit (similar to LangChain and AutoGPT), providing reliable infrastructure support for developers.
 
@@ -13,6 +13,88 @@ LYRAIOS aims to create the next generation AI Agent operating system with techno
 3. **Cross-Platform Runtime Environment**: Building cross-terminal AI runtime environment, enabling smooth migration from personal intelligent assistants to enterprise digital employees, applicable for validating multi-scenario solutions in finance, healthcare, intelligent manufacturing and other fields
 
 For detailed architecture information, see the [Architecture Documentation](docs/ARCHITECTURE.md).
+
+## System Architecture
+
+LYRAIOS adopts a layered architecture design, from top to bottom, including the user interface layer, core OS layer, MCP integration layer, and external services layer.
+
+![LYRAIOS Architecture](docs/lyraios-architecture.jpg)
+
+### User Interface Layer
+
+The user interface layer provides multiple interaction modes, allowing users to interact with the AI OS.
+
+#### Components:
+
+- **Web UI**: Based on Streamlit, providing an intuitive user interface
+- **Mobile UI**: Mobile adaptation interface, supporting mobile device access
+- **CLI**: Command line interface, suitable for developers and advanced users
+- **API Clients**: Provide API interfaces, supporting third-party application integration
+
+### Core OS Layer
+
+The core OS layer implements the basic functions of the AI operating system, including process management, memory system, I/O system, and security control.
+
+#### Components:
+
+- **Process Management**
+  - Task Scheduling: Dynamic allocation and scheduling of AI tasks
+  - Resource Allocation: Optimize AI resource usage
+  - State Management: Maintain AI process state
+
+- **Memory System**
+  - Short-term Memory: Session context maintenance
+  - Long-term Storage: Persistent knowledge storage
+  - Knowledge Base: Structured knowledge management
+
+- **I/O System**
+  - Multi-modal Input: Handle text, files, APIs, etc.
+  - Structured Output: Generate formatted output results
+  - Event Handling: Respond to system events
+
+- **Security & Access Control**
+  - Authentication: User authentication
+  - Authorization: Permission management
+  - Rate Limiting: Prevent abuse
+
+### MCP Integration Layer
+
+MCP Integration Layer is the core innovation of the system, achieving seamless integration with external services through the Model Context Protocol.
+
+#### Components:
+
+- **MCP Client**
+  - Protocol Handler: Process MCP protocol messages
+  - Connection Management: Manage connections to MCP servers
+  - Message Routing: Route messages to appropriate processors
+
+- **Tool Registry**
+  - Tool Registration: Register external tools and services
+  - Capability Discovery: Discover tool capabilities
+  - Manifest Validation: Validate tool manifests
+
+- **Tool Executor**
+  - Execution Environment: Provide an execution environment for tool execution
+  - Resource Management: Manage the resources used by tool execution
+  - Error Handling: Handle errors during tool execution
+
+- **Adapters**
+  - REST API Adapter: Connect to REST API services
+  - Python Plugin Adapter: Integrate Python plugins
+  - Custom Adapter: Support other types of integration
+
+### External Services Layer
+
+The external services layer includes various services integrated through the MCP protocol, which act as MCP servers providing capabilities.
+
+#### Components:
+
+- **File System**: Provide file read and write capabilities
+- **Database**: Provide data storage and query capabilities
+- **Web Search**: Provide internet search capabilities
+- **Code Editor**: Provide code editing and execution capabilities
+- **Browser**: Provide web browsing and interaction capabilities
+- **Custom Services**: Support other custom services integration
 
 ## Tool Integration Protocol
 
@@ -34,6 +116,44 @@ The Tool Integration Protocol is a key component of LYRAIOS's Open Protocol Arch
 4. **Use Tool**: Your tool is now available for use by LYRAIOS agents
 
 For examples and detailed documentation, see the [Tool Integration Guide](docs/tool_integration.md).
+
+## MCP Protocol Overview
+
+Model Context Protocol (MCP) is a client-server architecture protocol for connecting LLM applications and integrations. In MCP:
+
+- **Hosts** are LLM applications (such as Claude Desktop or IDE) that initiate connections
+- **Clients** maintain a 1:1 connection with servers in host applications
+- **Servers** provide context, tools, and prompts to clients
+
+### MCP Function Support
+
+LYRAIOS supports the following MCP functions:
+
+- **Resources**: Allow attaching local files and data
+- **Prompts**: Support prompt templates
+- **Tools**: Integrate to execute commands and scripts
+- **Sampling**: Support sampling functions (planned)
+- **Roots**: Support root directory functions (planned)
+
+## Data Flow
+
+### User Request Processing Flow
+
+1. User sends request through the interface layer
+2. Core OS layer receives the request and processes it
+3. If external tool support is needed, the request is forwarded to the MCP integration layer
+4. MCP client connects to the corresponding MCP server
+5. External service executes the request and returns the result
+6. The result is returned to the user through each layer
+
+### Tool Execution Flow
+
+1. AI Agent determines that a specific tool is needed
+2. Tool registry looks up tool definition and capabilities
+3. Tool executor prepares execution environment
+4. Adapter converts request to tool-understandable format
+5. Tool executes and returns the result
+6. The result is returned to the AI Agent for processing
 
 ## Overview
 LYRAIOS (LLM-based Your Reliable AI Operating System) is an advanced AI assistant platform built with Streamlit, designed to serve as an operating system for AI applications.
@@ -102,6 +222,31 @@ LYRAIOS (LLM-based Your Reliable AI Operating System) is an advanced AI assistan
   - Authentication and authorization
   - Rate limiting and quota management
   - Secure data storage
+
+## Security Considerations
+
+### Transmission Security
+- Use TLS for remote connections
+- Verify connection source
+- Implement authentication when needed
+
+### Message Validation
+- Verify all incoming messages
+- Clean input
+- Check message size limits
+- Verify JSON-RPC format
+
+### Resource Protection
+- Implement access control
+- Verify resource paths
+- Monitor resource usage
+- Limit request rate
+
+### Error Handling
+- Do not leak sensitive information
+- Record security-related errors
+- Implement appropriate cleanup
+- Handle DoS scenarios
 
 ## Roadmap 📍
 

@@ -38,8 +38,9 @@ This document outlines the architectural design and implementation details of th
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
 │  │ Local Tool   │  │ Cloud Service│  │ Custom Adapter      │  │
 │  │ Adapter      │  │ Adapter      │  │                     │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │                       MCP Client
 └───────────────────────────┬─────────────────────────────────┘
+                MCP(Model Context Protocol)
                             │
 ┌───────────────────────────▼─────────────────────────────────┐
 │                     Third-Party Tool Ecosystem               │
