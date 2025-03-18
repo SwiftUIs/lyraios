@@ -1,5 +1,15 @@
 """
-MCP Solana Server Module
+MCP Solana Server Package
 
-This module contains the MCP server implementation for Solana blockchain operations.
-""" 
+This package provides server implementations for the MCP Solana integration.
+"""
+
+from .server import SolanaMCPServer, run_server, main
+from .contract_server import SolanaContractServer
+
+__all__ = [
+    "SolanaMCPServer",
+    "SolanaContractServer",
+    "run_server",
+    "main",
+] 

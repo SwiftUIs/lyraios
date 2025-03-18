@@ -6,6 +6,7 @@ This module implements the MCP server for Solana blockchain operations.
 
 import argparse
 import asyncio
+import base64
 import json
 import logging
 import os
@@ -13,8 +14,9 @@ import sys
 from typing import Any, Dict, List, Optional, Union
 
 import solana
-from solana.rpc.async_api import AsyncClient
 from solana.publickey import PublicKey
+from solana.rpc.async_api import AsyncClient
+from solana.transaction import Transaction, TransactionInstruction, AccountMeta
 
 from ..models.protocol import (
     MCPRequest,
@@ -27,6 +29,20 @@ from ..models.protocol import (
     WalletInfo,
     TokenAccount,
     TransactionInfo,
+    AccountInfo,
+    AccountFilter,
+    ProgramAccountConfig,
+    PDAParams,
+    CPIParams,
+    DataSchema,
+    BufferLayout,
+)
+
+from ..utils.contract_utils import (
+    AccountParser,
+    DataDeserializer,
+    PDAHelper, 
+    CPIHelper
 )
 
 logger = logging.getLogger(__name__)
@@ -73,7 +89,7 @@ class SolanaMCPServer:
             return
         
         # Load wallets
-        await self._load_wallets()
+        await self._load_wallets("DefaultWalletAddress123")  # Placeholder for demo
         
         # Test connection to Solana
         try:
@@ -216,6 +232,11 @@ class SolanaMCPServer:
             "deploy_contract": self._handle_deploy_contract,
             "call_contract": self._handle_call_contract,
             "get_token_accounts": self._handle_get_token_accounts,
+            "get_program_accounts": self._handle_get_program_accounts,
+            "get_account_info": self._handle_get_account_info,
+            "deserialize_account_data": self._handle_deserialize_account_data,
+            "find_program_address": self._handle_find_program_address,
+            "create_cpi_transaction": self._handle_create_cpi_transaction,
             "shutdown": self._handle_shutdown,
         }
         
@@ -272,7 +293,15 @@ class SolanaMCPServer:
                 type=SolanaCapabilityType.CONTRACT,
                 name="Solana Smart Contracts",
                 description="Deploy and interact with Solana programs",
-                methods=["deploy_contract", "call_contract"]
+                methods=[
+                    "deploy_contract", 
+                    "call_contract",
+                    "get_program_accounts",
+                    "get_account_info",
+                    "deserialize_account_data",
+                    "find_program_address",
+                    "create_cpi_transaction"
+                ]
             ),
             SolanaCapability(
                 id="token",
@@ -406,20 +435,19 @@ class SolanaMCPServer:
         """
         # In a real implementation, this would deploy a program
         # For this example, we'll just return a dummy deployment
-        program_id = params.get("program_id")
-        signature = params.get("signature")
-        status = params.get("status")
-        block_time = params.get("block_time")
-        confirmations = params.get("confirmations")
-        fee = params.get("fee")
-        slot = params.get("slot")
+        program_id = params.get("program_id", "ProgramID123456789abcdef")
+        program_data = params.get("program_data", "")
+        
+        # Create a simulated transaction for program deployment
+        signature = "DeploymentSignature123456789abcdef"
+        
         return {
             "deployment": {
                 "program_id": program_id,
                 "transaction": {
                     "signature": signature,
-                    "status": status,
-                    "block_time": block_time,
+                    "status": "confirmed",
+                    "block_time": 1234567890,
                     "confirmations": 10,
                     "fee": 5000,
                     "slot": 123456789
@@ -437,27 +465,358 @@ class SolanaMCPServer:
         Returns:
             The response result.
         """
-        # In a real implementation, this would call a program
-        # For this example, we'll just return a dummy result
-        signature = params.get("signature")
-        status = params.get("status")
-        block_time = params.get("block_time")
-        confirmations = params.get("confirmations")
-        fee = params.get("fee")
-        slot = params.get("slot")
+        # Get parameters
+        program_id = params.get("program_id", "")
+        instruction_data = params.get("instruction_data", "")
+        accounts = params.get("accounts", [])
+        wallet_name = params.get("wallet_name")
+        
+        # Validate parameters
+        if not program_id:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing program_id parameter"
+            )
+        
+        if not instruction_data:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing instruction_data parameter"
+            )
+        
+        if not accounts:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing accounts parameter"
+            )
+        
+        # In a real implementation, this would create and submit a transaction
+        # For demonstration purposes, we'll create a simulated transaction
+        signature = "CallContractSignature123456789abcdef"
+        
+        # Create a response with transaction information and simulated return data
         return {
             "result": {
                 "transaction": {
                     "signature": signature,
-                    "status": status,
-                    "block_time": block_time,
-                    "confirmations": confirmations,
-                    "fee": fee,
-                    "slot": slot
+                    "status": "confirmed",
+                    "block_time": 1234567890,
+                    "confirmations": 32,
+                    "fee": 5000,
+                    "slot": 123456789
                 },
-                "data": "AQIDBAUGBwgJCg=="
+                "data": base64.b64encode(b"Example return data").decode("utf-8")
             }
         }
+    
+    async def _handle_get_program_accounts(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Handle the get_program_accounts request.
+        
+        Args:
+            params: The request parameters.
+                program_id: The program ID to query accounts for.
+                filters: Optional filters to apply.
+            
+        Returns:
+            The response result with program accounts.
+        """
+        # Get parameters
+        program_id = params.get("program_id")
+        filters_data = params.get("filters", [])
+        
+        # Validate parameters
+        if not program_id:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing program_id parameter"
+            )
+        
+        # Convert filters to AccountFilter objects
+        filters = []
+        for filter_data in filters_data:
+            filters.append(AccountFilter(**filter_data))
+        
+        try:
+            # Query program accounts
+            accounts = await AccountParser.get_program_accounts(
+                self.solana_client,
+                program_id,
+                filters
+            )
+            
+            # Return accounts as dictionaries
+            return {
+                "accounts": [account.dict() for account in accounts]
+            }
+        except MCPError as e:
+            # Re-raise MCP errors
+            raise
+        except Exception as e:
+            logger.error(f"Error getting program accounts: {e}")
+            raise MCPError(
+                code=MCPErrorCode.INTERNAL_ERROR,
+                message=f"Failed to get program accounts: {str(e)}"
+            )
+    
+    async def _handle_get_account_info(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Handle the get_account_info request.
+        
+        Args:
+            params: The request parameters.
+                address: The account address to query.
+            
+        Returns:
+            The response result with account information.
+        """
+        # Get parameters
+        address = params.get("address")
+        
+        # Validate parameters
+        if not address:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing address parameter"
+            )
+        
+        try:
+            # Query account info
+            account_info = await AccountParser.get_account_info(
+                self.solana_client,
+                address
+            )
+            
+            if account_info is None:
+                raise MCPError(
+                    code=MCPErrorCode.ACCOUNT_NOT_FOUND,
+                    message=f"Account not found: {address}"
+                )
+            
+            # Return account info as dictionary
+            return {
+                "account": account_info.dict()
+            }
+        except MCPError as e:
+            # Re-raise MCP errors
+            raise
+        except Exception as e:
+            logger.error(f"Error getting account info: {e}")
+            raise MCPError(
+                code=MCPErrorCode.INTERNAL_ERROR,
+                message=f"Failed to get account info: {str(e)}"
+            )
+    
+    async def _handle_deserialize_account_data(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Handle the deserialize_account_data request.
+        
+        Args:
+            params: The request parameters.
+                data: The account data (base64 encoded).
+                schema: The schema describing the data layout.
+            
+        Returns:
+            The response result with deserialized data.
+        """
+        # Get parameters
+        data = params.get("data")
+        schema_data = params.get("schema")
+        
+        # Validate parameters
+        if not data:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing data parameter"
+            )
+        
+        if not schema_data:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing schema parameter"
+            )
+        
+        try:
+            # Convert schema to DataSchema object
+            schema = DataSchema(**schema_data)
+            
+            # Deserialize data
+            parsed_data = DataDeserializer.deserialize(data, schema)
+            
+            # Return deserialized data
+            return {
+                "parsed_data": parsed_data
+            }
+        except MCPError as e:
+            # Re-raise MCP errors
+            raise
+        except Exception as e:
+            logger.error(f"Error deserializing account data: {e}")
+            raise MCPError(
+                code=MCPErrorCode.INVALID_ACCOUNT_DATA,
+                message=f"Failed to deserialize account data: {str(e)}"
+            )
+    
+    async def _handle_find_program_address(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Handle the find_program_address request.
+        
+        Args:
+            params: The request parameters.
+                program_id: The program ID to derive the address for.
+                seeds: The seeds to use in derivation (base58 or base64 encoded).
+            
+        Returns:
+            The response result with derived PDA.
+        """
+        # Get parameters
+        program_id = params.get("program_id")
+        seed_strings = params.get("seeds", [])
+        
+        # Validate parameters
+        if not program_id:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing program_id parameter"
+            )
+        
+        if not seed_strings:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing seeds parameter"
+            )
+        
+        try:
+            # Convert seed strings to bytes
+            seeds = []
+            for seed_str in seed_strings:
+                try:
+                    # Try decoding as base58 or base64
+                    try:
+                        seeds.append(base58.b58decode(seed_str))
+                    except:
+                        seeds.append(base64.b64decode(seed_str))
+                except:
+                    raise MCPError(
+                        code=MCPErrorCode.INVALID_PARAMS,
+                        message=f"Invalid seed format: {seed_str}"
+                    )
+            
+            # Find program address
+            address, bump = PDAHelper.find_program_address(program_id, seeds)
+            
+            # Return derived address and bump seed
+            return {
+                "address": address,
+                "bump_seed": bump
+            }
+        except MCPError as e:
+            # Re-raise MCP errors
+            raise
+        except Exception as e:
+            logger.error(f"Error finding program address: {e}")
+            raise MCPError(
+                code=MCPErrorCode.PDA_ERROR,
+                message=f"Failed to find program address: {str(e)}"
+            )
+    
+    async def _handle_create_cpi_transaction(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Handle the create_cpi_transaction request.
+        
+        Args:
+            params: The request parameters.
+                caller_program_id: The calling program's ID.
+                target_program_id: The target program's ID.
+                instruction_data: The instruction data (base64 encoded).
+                accounts: The accounts to include.
+                signers: The additional signers.
+            
+        Returns:
+            The response result with transaction data.
+        """
+        # Get parameters
+        caller_program_id = params.get("caller_program_id")
+        target_program_id = params.get("target_program_id")
+        instruction_data_b64 = params.get("instruction_data")
+        accounts = params.get("accounts", [])
+        signers = params.get("signers", [])
+        
+        # Validate parameters
+        if not caller_program_id:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing caller_program_id parameter"
+            )
+        
+        if not target_program_id:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing target_program_id parameter"
+            )
+        
+        if not instruction_data_b64:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing instruction_data parameter"
+            )
+        
+        if not accounts:
+            raise MCPError(
+                code=MCPErrorCode.INVALID_PARAMS,
+                message="Missing accounts parameter"
+            )
+        
+        try:
+            # Decode instruction data
+            instruction_data = base64.b64decode(instruction_data_b64)
+            
+            # Create CPI instruction
+            instruction = CPIHelper.create_cpi_instruction(
+                caller_program_id,
+                target_program_id,
+                instruction_data,
+                accounts
+            )
+            
+            # In a real implementation, this would be used to create and sign a transaction
+            # For this example, we'll return the instruction details
+            
+            # Get account metas as dictionaries
+            account_metas = [
+                {
+                    "pubkey": str(acc.pubkey),
+                    "is_signer": acc.is_signer,
+                    "is_writable": acc.is_writable
+                }
+                for acc in instruction.keys
+            ]
+            
+            # Return CPI instruction details
+            return {
+                "instruction": {
+                    "program_id": str(instruction.program_id),
+                    "data": base64.b64encode(instruction.data).decode("utf-8"),
+                    "accounts": account_metas
+                },
+                "transaction": {
+                    "signature": "CPITransactionSignature123456789abcdef",
+                    "status": "confirmed",
+                    "block_time": 1234567890,
+                    "confirmations": 32,
+                    "fee": 5000,
+                    "slot": 123456789
+                }
+            }
+        except MCPError as e:
+            # Re-raise MCP errors
+            raise
+        except Exception as e:
+            logger.error(f"Error creating CPI transaction: {e}")
+            raise MCPError(
+                code=MCPErrorCode.CPI_ERROR,
+                message=f"Failed to create CPI transaction: {str(e)}"
+            )
     
     async def _handle_get_token_accounts(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """

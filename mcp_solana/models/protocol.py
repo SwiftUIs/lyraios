@@ -53,6 +53,10 @@ class MCPErrorCode(int, Enum):
     TRANSACTION_FAILED = -32002
     CONTRACT_ERROR = -32003
     UNAUTHORIZED = -32004
+    ACCOUNT_NOT_FOUND = -32005
+    INVALID_ACCOUNT_DATA = -32006
+    PDA_ERROR = -32007
+    CPI_ERROR = -32008
 
 
 class MCPError(Exception):
@@ -140,4 +144,75 @@ class TransactionInfo(BaseModel):
     block_time: Optional[int] = None
     confirmations: Optional[int] = None
     fee: int
-    slot: Optional[int] = None 
+    slot: Optional[int] = None
+
+
+class AccountInfo(BaseModel):
+    """
+    Solana account information with parsed data.
+    """
+    address: str
+    owner: str
+    lamports: int
+    data: str  # Base64 encoded data
+    executable: bool
+    rent_epoch: int
+    parsed_data: Optional[Dict[str, Any]] = None
+
+
+class AccountFilter(BaseModel):
+    """
+    Filter for querying program accounts.
+    """
+    memcmp: Optional[Dict[str, Any]] = None  # {offset: int, bytes: str}
+    dataSize: Optional[int] = None
+
+
+class ProgramAccountConfig(BaseModel):
+    """
+    Configuration for querying program accounts.
+    """
+    filters: List[AccountFilter] = Field(default_factory=list)
+    encoding: str = "base64"
+    with_context: bool = False
+
+
+class PDAParams(BaseModel):
+    """
+    Parameters for finding a Program Derived Address (PDA).
+    """
+    program_id: str
+    seeds: List[str]  # Base58 or Base64 encoded seeds
+
+
+class CPIParams(BaseModel):
+    """
+    Parameters for Cross-Program Invocation (CPI).
+    """
+    caller_program_id: str
+    target_program_id: str
+    instruction_data: str  # Base64 encoded instruction data
+    accounts: List[Dict[str, Any]]
+    signers: List[str] = Field(default_factory=list)
+
+
+class BufferLayout(BaseModel):
+    """
+    Description of a buffer layout for data deserialization.
+    """
+    name: str
+    type: str
+    offset: int
+    length: Optional[int] = None
+    fields: Optional[List["BufferLayout"]] = None
+
+# Resolve forward reference
+BufferLayout.update_forward_refs()
+
+
+class DataSchema(BaseModel):
+    """
+    Schema for deserializing account data.
+    """
+    layouts: List[BufferLayout]
+    variant_field: Optional[str] = None  # For enum/union types 
