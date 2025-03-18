@@ -6,7 +6,7 @@ LYRAI is a Model Context Protocol (MCP) operating system for multi-AI AGENTs des
 
 **Welcome to check out the demo of our LYRA MCP-OS!**
 
-https://github.com/user-attachments/assets/adf1a6e4-d411-4f0b-82de-bcaaada4b0fc
+https://github.com/user-attachments/assets/479cad58-ce4b-4901-93ff-e60a98c477d4
 
 
 ## Core Innovations & Differentiated Value
