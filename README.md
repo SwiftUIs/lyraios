@@ -4,9 +4,11 @@
 
 LYRAI is a Model Context Protocol (MCP) operating system for multi-AI AGENTs designed to extend the functionality of AI applications (such as Claude Desktop and Cursor) by enabling them to interact with financial networks and blockchain public chains. The server offers a range of advanced AI assistants, including blockchain public chain operations (SOLANA, ETH, etc. - retrieving wallet addresses, listing wallet balances, transferring funds, deploying smart contracts, on-chain lending, calling contract functions, managing tokens), fintech market analysis and summary reports, and learning and training systems for the education sector.
 
+> In the future operation of LYRAIOS, advanced VIP features will exclusively support payment using LYRAI on solana, with LYRAI's CA : `A6MTWuHbXqjH3vYEfbs3mzvGThQtk5S12FjmdpVkpump`
+
 **Welcome to check out the demo of our LYRA MCP-OS!**
 
-https://github.com/user-attachments/assets/adf1a6e4-d411-4f0b-82de-bcaaada4b0fc
+https://github.com/user-attachments/assets/479cad58-ce4b-4901-93ff-e60a98c477d4
 
 
 ## Core Innovations & Differentiated Value
