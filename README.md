@@ -27,9 +27,9 @@ LYRAIOS adopts a layered architecture design, from top to bottom, including the 
 
 ![LYRAIOS Architecture](docs/lyraios-architecture.jpg)
 
-<div style="display: flex; justify-content: center;margin-bottom: 20px;font-size: 20px;font-weight: bold;">
+<p align="center">
    VS
-</div>
+</p>
 
 ![MANUS Architecture](docs/manus-architecture.png)
 
