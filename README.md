@@ -1,6 +1,6 @@
 # LYRAIOS
 
-English | [简体中文](https://github.com/GalaxyLLMCI/lyraios/blob/master/README_CN.md)
+English | [简体中文](README_CN.md)
 
 ## Overview & Technical Foundation
 
