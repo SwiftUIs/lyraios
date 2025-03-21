@@ -62,7 +62,7 @@ LYRAIOS 采用分层架构设计，从上到下包括用户界面层、核心操
 
 #### 主要功能:
 
-- ***进程管理**
+- **进程管理**
   - 任务调度：动态分配 AI 任务
   - 资源分配：优化 AI 资源使用
   - 状态管理：维护 AI 进程状态
@@ -86,290 +86,288 @@ LYRAIOS 采用分层架构设计，从上到下包括用户界面层、核心操
 
 MCP（模型上下文协议）集成层是系统的核心创新点，通过 MCP 实现与外部服务的无缝集成。
 
-#### Components:
+#### 主要组件：
 
-- **MCP Client**
-  - Protocol Handler: Process MCP protocol messages
-  - Connection Management: Manage connections to MCP servers
-  - Message Routing: Route messages to appropriate processors
+* MCP 客户端
+    * 处理 MCP 协议消息
+    * 管理 MCP 服务器的连接
+    * 进行消息路由
+* 工具注册表
+    * 注册外部工具和服务
+    * 发现工具能力
+    * 验证工具清单
+* 工具执行器
+    * 提供工具执行环境
+    * 管理工具执行所需资源
+    * 处理执行错误
+* 适配器
+    * REST API 适配器
+    * Python 插件适配器
+    * 自定义适配器
 
-- **Tool Registry**
-  - Tool Registration: Register external tools and services
-  - Capability Discovery: Discover tool capabilities
-  - Manifest Validation: Validate tool manifests
+### 外部服务层
 
-- **Tool Executor**
-  - Execution Environment: Provide an execution environment for tool execution
-  - Resource Management: Manage the resources used by tool execution
-  - Error Handling: Handle errors during tool execution
+外部服务层包括通过 MCP 协议集成的各种外部服务，它们作为 MCP 服务器提供能力。
 
-- **Adapters**
-  - REST API Adapter: Connect to REST API services
-  - Python Plugin Adapter: Integrate Python plugins
-  - Custom Adapter: Support other types of integration
+#### 主要组件：
 
-### External Services Layer
+* 文件系统：提供文件读写能力
+* 数据库：提供数据存储和查询能力
+* Web 搜索：提供互联网搜索能力
+* 代码编辑器：提供代码编辑和执行能力
+* 浏览器：提供网页浏览和交互能力
+* 自定义服务：支持其他外部服务集成
 
-The external services layer includes various services integrated through the MCP protocol, which act as MCP servers providing capabilities.
 
-#### Components:
+## 工具集成协议
 
-- **File System**: Provide file read and write capabilities
-- **Database**: Provide data storage and query capabilities
-- **Web Search**: Provide internet search capabilities
-- **Code Editor**: Provide code editing and execution capabilities
-- **Browser**: Provide web browsing and interaction capabilities
-- **Custom Services**: Support other custom services integration
+工具集成协议是LYRAIOS开放式协议架构的关键组成部分。它提供了一种标准化方式将第三方工具和服务集成到LYRAIOS生态系统中。
 
-## Tool Integration Protocol
+### 主要特性
 
-The Tool Integration Protocol is a key component of LYRAIOS's Open Protocol Architecture. It provides a standardized way to integrate third-party tools and services into the LYRAIOS ecosystem.
+- **标准化工具清单**：使用JSON模式定义工具，描述其能力、参数和要求
+- **可插拔适配器系统**：支持不同工具类型（REST API、Python插件等）
+- **安全执行环境**：工具在受控环境中运行，具有资源限制和权限检查
+- **版本和依赖管理**：跟踪工具版本和依赖关系
+- **监控和日志记录**：工具执行的完整日志记录
 
-### Key Features
+### 工具集成入门
 
-- **Standardized Tool Manifest**: Define tools using a JSON schema that describes capabilities, parameters, and requirements
-- **Pluggable Adapter System**: Support for different tool types (REST API, Python plugins, etc.)
-- **Secure Execution Environment**: Tools run in a controlled environment with resource limits and permission checks
-- **Versioning and Dependency Management**: Track tool versions and dependencies
-- **Monitoring and Logging**: Comprehensive logging of tool execution
+1. **定义工具清单**：创建描述工具能力的JSON文件
+2. **实现工具**：根据协议开发工具功能
+3. **注册工具**：使用API将工具注册到LYRAIOS
+4. **使用工具**：您的工具现在可供LYRAIOS代理使用
 
-### Getting Started with Tool Integration
+示例和详细文档请参阅[工具集成指南](docs/tool_integration.md)。
 
-1. **Define Tool Manifest**: Create a JSON file describing your tool's capabilities
-2. **Implement Tool**: Develop the tool functionality according to the protocol
-3. **Register Tool**: Use the API to register your tool with LYRAIOS
-4. **Use Tool**: Your tool is now available for use by LYRAIOS agents
+## MCP协议概述
 
-For examples and detailed documentation, see the [Tool Integration Guide](docs/tool_integration.md).
+模型上下文协议（MCP）是用于连接LLM应用和集成的客户端-服务器架构协议。在MCP中：
 
-## MCP Protocol Overview
+- **主机**是发起连接的LLM应用（如Claude Desktop或IDE）
+- **客户端**与主机应用中的服务器保持1:1连接
+- **服务器**向客户端提供上下文、工具和提示
 
-Model Context Protocol (MCP) is a client-server architecture protocol for connecting LLM applications and integrations. In MCP:
+### MCP功能支持
 
-- **Hosts** are LLM applications (such as Claude Desktop or IDE) that initiate connections
-- **Clients** maintain a 1:1 connection with servers in host applications
-- **Servers** provide context, tools, and prompts to clients
+LYRAIOS支持以下MCP功能：
 
-### MCP Function Support
+- **资源**：允许附加本地文件和数据
+- **提示**：支持提示模板
+- **工具**：集成执行命令和脚本
+- **采样**：支持采样功能（计划中）
+- **根目录**：支持根目录功能（计划中）
 
-LYRAIOS supports the following MCP functions:
+## 数据流
 
-- **Resources**: Allow attaching local files and data
-- **Prompts**: Support prompt templates
-- **Tools**: Integrate to execute commands and scripts
-- **Sampling**: Support sampling functions (planned)
-- **Roots**: Support root directory functions (planned)
+### 用户请求处理流程
 
-## Data Flow
+1. 用户通过接口层发送请求
+2. 核心OS层接收并处理请求
+3. 如需外部工具支持，请求转发至MCP集成层
+4. MCP客户端连接对应MCP服务器
+5. 外部服务执行请求并返回结果
+6. 结果通过各层返回用户
 
-### User Request Processing Flow
+### 工具执行流程
 
-1. User sends request through the interface layer
-2. Core OS layer receives the request and processes it
-3. If external tool support is needed, the request is forwarded to the MCP integration layer
-4. MCP client connects to the corresponding MCP server
-5. External service executes the request and returns the result
-6. The result is returned to the user through each layer
+1. AI代理确定需要特定工具
+2. 工具注册表查找工具定义和能力
+3. 工具执行器准备执行环境
+4. 适配器转换请求为工具可理解格式
+5. 工具执行并返回结果
+6. 结果返回AI代理处理
 
-### Tool Execution Flow
+## 概述
+LYRAIOS（基于LLM的可靠AI操作系统）是用Streamlit构建的高级AI助手平台，旨在作为AI应用的操作系统。
 
-1. AI Agent determines that a specific tool is needed
-2. Tool registry looks up tool definition and capabilities
-3. Tool executor prepares execution environment
-4. Adapter converts request to tool-understandable format
-5. Tool executes and returns the result
-6. The result is returned to the AI Agent for processing
+### 核心OS功能
+- **AI进程管理**： 
+  - 动态任务分配和调度
+  - 多助手协调通信
+  - 资源优化和负载均衡
+  - 状态管理和持久化
 
-## Overview
-LYRAIOS (LLM-based Your Reliable AI Operating System) is an advanced AI assistant platform built with Streamlit, designed to serve as an operating system for AI applications.
+- **AI内存系统**：
+  - 短期对话记忆
+  - 长期向量数据库存储
+  - 跨会话上下文保存
+  - 知识库集成
 
-### Core OS Features
-- **AI Process Management**: 
-  - Dynamic task allocation and scheduling
-  - Multi-assistant coordination and communication
-  - Resource optimization and load balancing
-  - State management and persistence
+- **AI I/O系统**：
+  - 多模态输入处理（文本/文件/API）
+  - 结构化输出格式
+  - 流处理能力
+  - 事件驱动架构
 
-- **AI Memory System**:
-  - Short-term conversation memory
-  - Long-term vector database storage
-  - Cross-session context preservation
-  - Knowledge base integration
+### 内置工具
+- **计算器**：包含阶乘和质数检查的高级数学运算
+- **网络搜索**：集成DuckDuckGo搜索（可自定义结果限制）
+- **金融分析**： 
+  - 实时股价跟踪
+  - 公司信息检索
+  - 分析师推荐
+  - 金融新闻聚合
+- **文件管理**：工作区文件读/写/列表
+- **研究工具**：与Exa的集成研究能力
 
-- **AI I/O System**:
-  - Multi-modal input processing (text, files, APIs)
-  - Structured output formatting
-  - Stream processing capabilities
-  - Event-driven architecture
+### 专业助手团队
+- **Python助手**： 
+  - 实时Python代码执行
+  - Streamlit图表能力
+  - 使用pip的包管理
+- **研究助手**： 
+  - 生成NYT风格报告
+  - 自动化网络研究
+  - 结构化输出格式
+  - 来源引用和参考管理
 
-### Built-in Tools
-- **Calculator**: Advanced mathematical operations including factorial and prime number checking
-- **Web Search**: Integrated DuckDuckGo search with customizable result limits
-- **Financial Analysis**: 
-  - Real-time stock price tracking
-  - Company information retrieval
-  - Analyst recommendations
-  - Financial news aggregation
-- **File Management**: Read, write, and list files in the workspace
-- **Research Tools**: Integration with Exa for comprehensive research capabilities
+### 技术架构
+- **FastAPI后端**：带自动文档的RESTful API
+- **Streamlit前端**：交互式Web界面
+- **向量数据库**：用于高效知识存储检索的PGVector
+- **PostgreSQL存储**：对话和助手状态的持久存储
+- **Docker支持**：开发和生产环境的容器化部署
 
-### Specialized Assistant Team
-- **Python Assistant**: 
-  - Live Python code execution
-  - Streamlit charting capabilities
-  - Package management with pip
-- **Research Assistant**: 
-  - NYT-style report generation
-  - Automated web research
-  - Structured output formatting
-  - Source citation and reference management
+### 系统特性
+- **知识管理**： 
+  - PDF文档处理
+  - 网站内容集成
+  - 基于向量的语义搜索
+  - 知识图谱构建
+- **进程控制**： 
+  - 任务调度和优先级
+  - 资源分配
+  - 错误处理和恢复
+  - 性能监控
+- **安全与访问控制**：
+  - API密钥管理
+  - 认证和授权
+  - 速率限制和配额管理
+  - 安全数据存储
 
-### Technical Architecture
-- **FastAPI Backend**: RESTful API with automatic documentation
-- **Streamlit Frontend**: Interactive web interface
-- **Vector Database**: PGVector for efficient knowledge storage and retrieval
-- **PostgreSQL Storage**: Persistent storage for conversations and assistant states
-- **Docker Support**: Containerized deployment for development and production
+## 安全考虑
 
-### System Features
-- **Knowledge Management**: 
-  - PDF document processing
-  - Website content integration
-  - Vector-based semantic search
-  - Knowledge graph construction
-- **Process Control**: 
-  - Task scheduling and prioritization
-  - Resource allocation
-  - Error handling and recovery
-  - Performance monitoring
-- **Security & Access Control**:
-  - API key management
-  - Authentication and authorization
-  - Rate limiting and quota management
-  - Secure data storage
+### 传输安全
+- 使用TLS进行远程连接
+- 验证连接来源
+- 需要时实施认证
 
-## Security Considerations
+### 消息验证
+- 验证所有传入消息
+- 输入清洗
+- 检查消息大小限制
+- 验证JSON-RPC格式
 
-### Transmission Security
-- Use TLS for remote connections
-- Verify connection source
-- Implement authentication when needed
+### 资源保护
+- 实施访问控制
+- 验证资源路径
+- 监控资源使用
+- 限制请求速率
 
-### Message Validation
-- Verify all incoming messages
-- Clean input
-- Check message size limits
-- Verify JSON-RPC format
+### 错误处理
+- 不泄露敏感信息
+- 记录安全相关错误
+- 实施适当清理
+- 处理DoS场景
 
-### Resource Protection
-- Implement access control
-- Verify resource paths
-- Monitor resource usage
-- Limit request rate
+## 路线图 📍
 
-### Error Handling
-- Do not leak sensitive information
-- Record security-related errors
-- Implement appropriate cleanup
-- Handle DoS scenarios
+### 核心平台
+- ✅ 基础AI助手框架
+- ✅ Streamlit Web界面
+- ✅ FastAPI后端
+- ✅ 数据库集成（SQLite/PostgreSQL）
+- ✅ OpenAI集成
+- ✅ Docker容器化
+- ✅ 环境配置系统
+- 🔄 多模态输入处理（部分）
+- 🚧 高级错误处理和恢复
+- 🚧 性能监控仪表板
+- 📅 分布式任务队列
+- 📅 水平扩展支持
+- 📅 自定义插件架构
 
-## Roadmap 📍
+### AI进程管理
+- ✅ 基础任务分配
+- ✅ 多助手团队结构
+- ✅ 状态管理和持久化
+- 🔄 动态任务调度（部分）
+- 🚧 资源优化
+- 🚧 负载均衡
+- 📅 进程可视化
+- 📅 工作流设计器
+- 📅 高级进程分析
 
-### Core Platform
-- ✅ Basic AI Assistant Framework
-- ✅ Streamlit Web Interface
-- ✅ FastAPI Backend
-- ✅ Database Integration (SQLite/PostgreSQL)
-- ✅ OpenAI Integration
-- ✅ Docker Containerization
-- ✅ Environment Configuration System
-- 🔄 Multi-modal Input Processing (Partial)
-- 🚧 Advanced Error Handling & Recovery
-- 🚧 Performance Monitoring Dashboard
-- 📅 Distributed Task Queue
-- 📅 Horizontal Scaling Support
-- 📅 Custom Plugin Architecture
+### 内存系统
+- ✅ 短期对话记忆
+- ✅ 基础向量数据库集成
+- ✅ 会话上下文保存
+- 🔄 知识库集成（部分）
+- 🚧 内存优化算法
+- 🚧 跨会话学习
+- 📅 分层内存架构
+- 📅 遗忘机制
+- 📅 内存压缩
 
-### AI Process Management
-- ✅ Basic Task Allocation
-- ✅ Multi-assistant Team Structure
-- ✅ State Management & Persistence
-- 🔄 Dynamic Task Scheduling (Partial)
-- 🚧 Resource Optimization
-- 🚧 Load Balancing
-- 📅 Process Visualization
-- 📅 Workflow Designer
-- 📅 Advanced Process Analytics
+### 工具与集成
+- ✅ 计算器
+- ✅ 网络搜索（DuckDuckGo）
+- ✅ 金融分析工具
+- ✅ 文件管理
+- ✅ 研究工具（Exa）
+- ✅ PDF文档处理
+- ✅ 网站内容集成
+- 🔄 Python代码执行（部分）
+- 🚧 高级数据可视化
+- 🚧 外部API集成框架
+- 📅 图像生成和处理
+- 📅 音频处理
+- 📅 视频分析
 
-### Memory System
-- ✅ Short-term Conversation Memory
-- ✅ Basic Vector Database Integration
-- ✅ Session Context Preservation
-- 🔄 Knowledge Base Integration (Partial)
-- 🚧 Memory Optimization Algorithms
-- 🚧 Cross-session Learning
-- 📅 Hierarchical Memory Architecture
-- 📅 Forgetting Mechanisms
-- 📅 Memory Compression
+### 安全与访问控制
+- ✅ 基础API密钥管理
+- ✅ 简单认证
+- 🔄 授权系统（部分）
+- 🚧 速率限制
+- 🚧 配额管理
+- 📅 基于角色的访问控制
+- 📅 审计日志
+- 📅 合规报告
 
-### Tools & Integrations
-- ✅ Calculator
-- ✅ Web Search (DuckDuckGo)
-- ✅ Financial Analysis Tools
-- ✅ File Management
-- ✅ Research Tools (Exa)
-- ✅ PDF Document Processing
-- ✅ Website Content Integration
-- 🔄 Python Code Execution (Partial)
-- 🚧 Advanced Data Visualization
-- 🚧 External API Integration Framework
-- 📅 Image Generation & Processing
-- 📅 Audio Processing
-- 📅 Video Analysis
+### 开放式协议架构
+- 🔄 模块接口标准（部分）
+- 🚧 第三方工具集成协议
+- 🚧 服务发现机制
+- 📅 通用连接器框架
+- 📅 协议验证系统
+- 📅 遗留系统兼容层
 
-### Security & Access Control
-- ✅ Basic API Key Management
-- ✅ Simple Authentication
-- 🔄 Authorization System (Partial)
-- 🚧 Rate Limiting
-- 🚧 Quota Management
-- 📅 Role-based Access Control
-- 📅 Audit Logging
-- 📅 Compliance Reporting
+### 多代理协作
+- ✅ 基础团队结构
+- 🔄 代理间通信（部分）
+- 🚧 任务分解引擎
+- 🚧 冲突解决系统
+- 📅 协作规划
+- 📅 涌现行为分析
+- 📅 代理专业化框架
 
-### Open Protocol Architecture
-- 🔄 Module Interface Standards (Partial)
-- 🚧 Third-party Tool Integration Protocol
-- 🚧 Service Discovery Mechanism
-- 📅 Universal Connector Framework
-- 📅 Protocol Validation System
-- 📅 Compatibility Layer for Legacy Systems
+### 跨平台支持
+- ✅ Web界面
+- 🔄 API访问（部分）
+- 🚧 移动响应
+- 📅 桌面应用
+- 📅 CLI界面
+- 📅 IoT设备集成
+- 📅 语音助手集成
 
-### Multi-Agent Collaboration
-- ✅ Basic Team Structure
-- 🔄 Inter-agent Communication (Partial)
-- 🚧 Task Decomposition Engine
-- 🚧 Conflict Resolution System
-- 📅 Collaborative Planning
-- 📅 Emergent Behavior Analysis
-- 📅 Agent Specialization Framework
+### 图例
+- ✅ 已完成
+- 🔄 部分实现
+- 🚧 开发中
+- 📅 计划中
 
-### Cross-Platform Support
-- ✅ Web Interface
-- 🔄 API Access (Partial)
-- 🚧 Mobile Responsiveness
-- 📅 Desktop Application
-- 📅 CLI Interface
-- 📅 IoT Device Integration
-- 📅 Voice Assistant Integration
-
-### Legend
-- ✅ Completed
-- 🔄 Partially Implemented
-- 🚧 In Development
-- 📅 Planned
-
-## Setup Workspace
+## 设置工作区
 ```sh
 # Clone the repo
 git clone https://github.com/GalaxyLLMCI/lyraios
@@ -398,38 +396,7 @@ phi ws up
 
 # Stop Lyraios locally
 phi ws down
-```
 
-## Run Lyraios locally
-
-1. Install [docker desktop](https://www.docker.com/products/docker-desktop)
-
-2. Export credentials
-
-We use gpt-4o as the LLM, so export your OpenAI API Key
-
-```sh
-export OPENAI_API_KEY=sk-***
-
-# To use Exa for research, export your EXA_API_KEY (get it from [here](https://dashboard.exa.ai/api-keys))
-export EXA_API_KEY=xxx
-
-# To use Gemini for research, export your GOOGLE_API_KEY (get it from [here](https://console.cloud.google.com/apis/api/generativelanguage.googleapis.com/overview?project=lyraios))
-export GOOGLE_API_KEY=xxx
-
-
-# OR set them in the `.env` file
-OPENAI_API_KEY=xxx
-EXA_API_KEY=xxx
-GOOGLE_API_KEY=xxx
-
-# Start the workspace using:
-phi ws up
-
-# Open [localhost:8501](http://localhost:8501) to view the Streamlit App.
-
-# Stop the workspace using:
-phi ws down
 ```
 
 ## API Documentation
