@@ -63,28 +63,28 @@ LYRAIOS 采用分层架构设计，从上到下包括用户界面层、核心操
 #### 主要功能:
 
 - ***进程管理**
-  - Task Scheduling: Dynamic allocation and scheduling of AI tasks
-  - Resource Allocation: Optimize AI resource usage
-  - State Management: Maintain AI process state
+  - 任务调度：动态分配 AI 任务
+  - 资源分配：优化 AI 资源使用
+  - 状态管理：维护 AI 进程状态
 
 - **Memory System**
-  - Short-term Memory: Session context maintenance
-  - Long-term Storage: Persistent knowledge storage
-  - Knowledge Base: Structured knowledge management
+  - 短期记忆：会话上下文维护
+  - 长期存储：持久化知识存储
+  - 知识库：结构化知识管理
 
-- **I/O System**
-  - Multi-modal Input: Handle text, files, APIs, etc.
-  - Structured Output: Generate formatted output results
-  - Event Handling: Respond to system events
+- **I/O 系统**
+  - 多模态输入：处理文本、文件、API 请求等
+  - 结构化输出：生成格式化的输出结果
+  - 事件处理：响应系统事件
 
-- **Security & Access Control**
-  - Authentication: User authentication
-  - Authorization: Permission management
-  - Rate Limiting: Prevent abuse
+- **安全和访问控制**
+  - 身份验证：用户身份认证
+  - 权限管理：细粒度访问控制
+  - 速率限制：防止滥用
 
-### MCP Integration Layer
+### MCP 集成层
 
-MCP Integration Layer is the core innovation of the system, achieving seamless integration with external services through the Model Context Protocol.
+MCP（模型上下文协议）集成层是系统的核心创新点，通过 MCP 实现与外部服务的无缝集成。
 
 #### Components:
 
